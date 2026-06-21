@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>后台管理 - 厦门工学院校园办事问答</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: #001529;
+            color: white;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #07C160;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .sidebar-logo-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            padding: 16px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 14px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .menu-item.active {
+            background: #07C160;
+            color: white;
+        }
+
+        .menu-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容区 */
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+        }
+
+        /* 顶部栏 */
+        .topbar {
+            background: white;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .topbar-left {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .user-info:hover {
+            background: #f5f5f5;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: #07C160;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .logout-btn {
+            padding: 6px 16px;
+            background: #ff4d4f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ff7875;
+        }
+
+        /* 内容区 */
+        .content {
+            padding: 24px;
+        }
+
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-title {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            color: #52c41a;
+            margin-top: 8px;
+        }
+
+        /* 卡片 */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* 表格 */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table th {
+            background: #fafafa;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .table td {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        /* 状态标签 */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .tag-success {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .tag-warning {
+            background: #fffbe6;
+            color: #faad14;
+            border: 1px solid #ffe58f;
+        }
+
+        .tag-error {
+            background: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-primary {
+            background: #07C160;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #06AD56;
+        }
+
+        .btn-default {
+            background: #f7f7f7;
+            color: #666;
+            border: 1px solid #e5e5e5;
+        }
+
+        .btn-default:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-danger {
+            background: #ff4d4f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff7875;
+        }
+
+        /* 搜索栏 */
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #07C160;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px 0;
+        }
+
+        .page-btn {
+            padding: 6px 12px;
+            border: 1px solid #e5e5e5;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .page-btn:hover {
+            border-color: #07C160;
+            color: #07C160;
+        }
+
+        .page-btn.active {
+            background: #07C160;
+            border-color: #07C160;
+            color: white;
+        }
+
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 表单 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: #07C160;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">🎓</div>
+                <div class="sidebar-logo-text">后台管理</div>
+            </div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="switchTab('dashboard')">
+                <span class="menu-icon">📊</span>
+                <span>数据概览</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('questions')">
+                <span class="menu-icon">❓</span>
+                <span>问题管理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('feedback')">
+                <span class="menu-icon">💬</span>
+                <span>反馈处理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('users')">
+                <span class="menu-icon">👥</span>
+                <span>用户管理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('knowledge')">
+                <span class="menu-icon">📚</span>
+                <span>知识库管理</span>
+            </div>
+            <div class="menu-item" onclick="switchTab('settings')">
+                <span class="menu-icon">⚙️</span>
+                <span>系统设置</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main">
+        <!-- 顶部栏 -->
+        <div class="topbar">
+            <div class="topbar-left" id="pageTitle">数据概览</div>
+            <div class="topbar-right">
+                <div class="user-info">
+                    <div class="user-avatar">管</div>
+                    <span class="user-name">管理员</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content" id="contentArea">
+            <!-- 数据概览 -->
+            <div id="dashboardContent">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-title">今日咨询量</div>
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-trend">↑ 12.5% 较昨日</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">累计用户数</div>
+                        <div class="stat-value">8,567</div>
+                        <div class="stat-trend">↑ 5.2% 较上周</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">待处理反馈</div>
+                        <div class="stat-value">23</div>
+                        <div class="stat-trend">需要及时处理</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">知识库条目</div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-trend">覆盖主要业务</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">热门问题 TOP 10</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>问题</th>
+                                    <th>咨询次数</th>
+                                    <th>占比</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>奖学金申请条件</td><td>345</td><td>28%</td></tr>
+                                <tr><td>2</td><td>宿舍管理规定</td><td>289</td><td>23%</td></tr>
+                                <tr><td>3</td><td>国家助学金申请</td><td>198</td><td>16%</td></tr>
+                                <tr><td>4</td><td>勤工助学申请</td><td>156</td><td>13%</td></tr>
+                                <tr><td>5</td><td>家庭经济困难认定</td><td>134</td><td>11%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 问题管理 -->
+            <div id="questionsContent" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">问题列表</span>
+                        <button class="btn btn-primary" onclick="showAddQuestionModal()">+ 添加问题</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="search-bar">
+                            <input type="text" class="search-input" placeholder="搜索问题...">
+                            <button class="btn btn-primary">搜索</button>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>问题</th>
+                                    <th>分类</th>
+                                    <th>咨询次数</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>奖学金申请条件</td>
+                                    <td>奖助学金</td>
+                                    <td>345</td>
+                                    <td><span class="tag tag-success">已发布</span></td>
+                                    <td>
+                                        <button class="btn btn-default">编辑</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>宿舍管理规定</td>
+                                    <td>宿舍管理</td>
+                                    <td>289</td>
+                                    <td><span class="tag tag-success">已发布</span></td>
+                                    <td>
+                                        <button class="btn btn-default">编辑</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 反馈处理 -->
+            <div id="feedbackContent" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">用户反馈</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>反馈问题</th>
+                                    <th>反馈类型</th>
+                                    <th>详细说明</th>
+                                    <th>提交时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedbackList">
+                                <tr>
+                                    <td>奖学金申请条件</td>
+                                    <td>信息有误</td>
+                                    <td>申请条件描述不够详细</td>
+                                    <td>2026-06-20 15:30</td>
+                                    <td><span class="tag tag-warning">待处理</span></td>
+                                    <td>
+                                        <button class="btn btn-primary">处理</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户管理 -->
+            <div id="usersContent" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">用户列表</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>账号</th>
+                                    <th>姓名</th>
+                                    <th>用户类型</th>
+                                    <th>联系电话</th>
+                                    <th>注册时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userList">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #999;">加载中...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 知识库管理 -->
+            <div id="knowledgeContent" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">知识库列表</span>
+                        <button class="btn btn-primary" onclick="showAddKnowledgeModal()">+ 添加知识</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>分类</th>
+                                    <th>更新时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>厦门工学院奖学金评选办法</td>
+                                    <td>奖助学金</td>
+                                    <td>2026-06-15</td>
+                                    <td>
+                                        <button class="btn btn-default">编辑</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>厦门工学院学生宿舍管理规定</td>
+                                    <td>宿舍管理</td>
+                                    <td>2026-06-21</td>
+                                    <td>
+                                        <button class="btn btn-default">编辑</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统设置 -->
+            <div id="settingsContent" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">系统设置</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">系统名称</label>
+                            <input type="text" class="form-input" value="厦门工学院校园办事问答系统">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">欢迎语</label>
+                            <textarea class="form-textarea">您好！我是校园办事问答助手，有什么可以帮您？</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">系统状态</label>
+                            <select class="form-select">
+                                <option value="1">正常运行</option>
+                                <option value="0">维护模式</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary">保存设置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加问题模态框 -->
+    <div class="modal" id="questionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">添加问题</span>
+                <button class="modal-close" onclick="closeModal('questionModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">问题标题</label>
+                    <input type="text" class="form-input" placeholder="请输入问题标题">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">问题分类</label>
+                    <select class="form-select">
+                        <option value="">请选择分类</option>
+                        <option value="1">奖助学金</option>
+                        <option value="2">宿舍管理</option>
+                        <option value="3">纪律处分</option>
+                        <option value="4">证件证明</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">答案内容</label>
+                    <textarea class="form-textarea" placeholder="请输入答案内容"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeModal('questionModal')">取消</button>
+                <button class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 检查登录状态
+        window.onload = function() {
+            const user = sessionStorage.getItem('campusQA_user');
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const userData = JSON.parse(user);
+            if (userData.type !== 'admin') {
+                alert('您没有管理员权限');
+                window.location.href = 'campus-qa.html';
+                return;
+            }
+            
+            // 加载反馈数据
+            loadFeedbackData();
+        };
+
+        // 切换标签页
+        function switchTab(tab) {
+            const tabs = ['dashboard', 'questions', 'feedback', 'users', 'knowledge', 'settings'];
+            const titles = {
+                'dashboard': '数据概览',
+                'questions': '问题管理',
+                'feedback': '反馈处理',
+                'users': '用户管理',
+                'knowledge': '知识库管理',
+                'settings': '系统设置'
+            };
+            
+            // 更新菜单状态
+            document.querySelectorAll('.menu-item').forEach((item, index) => {
+                item.classList.remove('active');
+                if (tabs[index] === tab) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // 更新标题
+            document.getElementById('pageTitle').textContent = titles[tab];
+            
+            // 切换内容
+            tabs.forEach(t => {
+                const content = document.getElementById(t + 'Content');
+                if (content) {
+                    content.style.display = t === tab ? 'block' : 'none';
+                }
+            });
+            
+            // 加载特定数据
+            if (tab === 'users') {
+                loadUserData();
+            }
+        }
+
+        // 加载反馈数据
+        function loadFeedbackData() {
+            const feedbacks = JSON.parse(localStorage.getItem('campusQA_feedbacks') || '[]');
+            const feedbackList = document.getElementById('feedbackList');
+            
+            if (feedbacks.length === 0) {
+                feedbackList.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">暂无反馈数据</td></tr>';
+                return;
+            }
+            
+            const typeMap = {
+                'incorrect': '信息有误',
+                'incomplete': '内容不完整',
+                'unclear': '表述不清楚',
+                'outdated': '信息已过时',
+                'other': '其他问题'
+            };
+            
+            feedbackList.innerHTML = feedbacks.map(fb => `
+                <tr>
+                    <td>${fb.question}</td>
+                    <td>${typeMap[fb.type] || fb.type}</td>
+                    <td>${fb.detail || '-'}</td>
+                    <td>${new Date(fb.timestamp).toLocaleString()}</td>
+                    <td><span class="tag tag-warning">待处理</span></td>
+                    <td>
+                        <button class="btn btn-primary" onclick="handleFeedback('${fb.id}')">处理</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 加载用户数据
+        function loadUserData() {
+            const users = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
+            const userList = document.getElementById('userList');
+            
+            const userArray = Object.entries(users).map(([key, user]) => ({
+                key,
+                ...user
+            }));
+            
+            if (userArray.length === 0) {
+                userList.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">暂无注册用户</td></tr>';
+                return;
+            }
+            
+            const typeMap = { 'student': '学生', 'teacher': '教师', 'admin': '管理员' };
+            
+            userList.innerHTML = userArray.map(user => `
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.name}</td>
+                    <td>${typeMap[user.type] || user.type}</td>
+                    <td>${user.phone || '-'}</td>
+                    <td>${new Date(user.createTime).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteUser('${user.key}')">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 删除用户
+        function deleteUser(key) {
+            if (confirm('确认删除该用户？')) {
+                const users = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
+                delete users[key];
+                localStorage.setItem('campusQA_users', JSON.stringify(users));
+                loadUserData();
+                alert('用户已删除');
+            }
+        }
+
+        // 处理反馈
+        function handleFeedback(id) {
+            if (confirm('确认已处理该反馈？')) {
+                const feedbacks = JSON.parse(localStorage.getItem('campusQA_feedbacks') || '[]');
+                const index = feedbacks.findIndex(f => f.id === id);
+                if (index > -1) {
+                    feedbacks.splice(index, 1);
+                    localStorage.setItem('campusQA_feedbacks', JSON.stringify(feedbacks));
+                    loadFeedbackData();
+                    alert('反馈已处理');
+                }
+            }
+        }
+
+        // 显示添加问题模态框
+        function showAddQuestionModal() {
+            document.getElementById('questionModal').classList.add('show');
+        }
+
+        // 显示添加知识模态框
+        function showAddKnowledgeModal() {
+            alert('知识库添加功能开发中...');
+        }
+
+        // 关闭模态框
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // 退出登录
+        function logout() {
+            if (confirm('确认退出登录？')) {
+                sessionStorage.removeItem('campusQA_user');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
