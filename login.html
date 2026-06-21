@@ -772,7 +772,11 @@
 
         <div class="login-footer">
             <p class="footer-text">首次使用？快速注册即可体验智能问答服务</p>
-            <a href="#" class="visitor-btn" onclick="clearCache(); return false;" style="margin-top: 10px; font-size: 12px; color: #999;">清除缓存数据</a>
+            <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                <a href="#" class="visitor-btn" onclick="exportUserData(); return false;" style="font-size: 12px;">📤 导出用户数据</a>
+                <a href="#" class="visitor-btn" onclick="importUserData(); return false;" style="font-size: 12px;">📥 导入用户数据</a>
+                <a href="#" class="visitor-btn" onclick="clearCache(); return false;" style="font-size: 12px; color: #ff4d4f;">🗑️ 清除缓存</a>
+            </div>
         </div>
     </div>
 
@@ -1162,6 +1166,102 @@
         // 忘记密码提示
         function showForgotTip() {
             alert('请联系学校信息中心重置密码\n联系电话：0592-XXXXXXX');
+        }
+        
+        // 导出用户数据
+        function exportUserData() {
+            const users = localStorage.getItem('campusQA_users');
+            const rememberUser = localStorage.getItem('campusQA_rememberUser');
+            
+            if (!users || Object.keys(JSON.parse(users)).length === 0) {
+                alert('暂无用户数据可导出');
+                return;
+            }
+            
+            const exportData = {
+                users: JSON.parse(users),
+                rememberUser: rememberUser ? JSON.parse(rememberUser) : null,
+                exportTime: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            
+            const exportName = 'campus-qa-users-' + new Date().toISOString().slice(0, 10) + '.json';
+            
+            // 创建下载链接
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportName);
+            linkElement.style.display = 'none';
+            document.body.appendChild(linkElement);
+            linkElement.click();
+            document.body.removeChild(linkElement);
+            
+            alert('用户数据已导出！\n文件名：' + exportName + '\n\n请将此文件保存好，可在其他设备导入使用。');
+        }
+        
+        // 导入用户数据
+        function importUserData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const importData = JSON.parse(event.target.result);
+                        
+                        // 验证数据格式
+                        if (!importData.users || !importData.version) {
+                            alert('无效的数据文件格式');
+                            return;
+                        }
+                        
+                        // 获取现有数据
+                        const existingUsers = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
+                        const importUsers = importData.users;
+                        
+                        // 合并数据（导入的数据覆盖现有数据）
+                        const mergedUsers = { ...existingUsers, ...importUsers };
+                        
+                        // 显示导入信息
+                        const importCount = Object.keys(importUsers).length;
+                        const existingCount = Object.keys(existingUsers).length;
+                        const mergedCount = Object.keys(mergedUsers).length;
+                        
+                        let message = '导入数据信息：\n';
+                        message += '• 导入用户数：' + importCount + '\n';
+                        message += '• 现有用户数：' + existingCount + '\n';
+                        message += '• 合并后总数：' + mergedCount + '\n\n';
+                        message += '是否确认导入？';
+                        
+                        if (confirm(message)) {
+                            localStorage.setItem('campusQA_users', JSON.stringify(mergedUsers));
+                            
+                            // 如果有记住的用户信息，也导入
+                            if (importData.rememberUser) {
+                                localStorage.setItem('campusQA_rememberUser', JSON.stringify(importData.rememberUser));
+                            }
+                            
+                            alert('导入成功！共导入 ' + importCount + ' 个用户。');
+                            location.reload();
+                        }
+                    } catch (error) {
+                        alert('文件解析失败，请确保是有效的JSON文件');
+                        console.error('Import error:', error);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
         }
         
         // 清除缓存数据
