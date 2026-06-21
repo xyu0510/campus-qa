@@ -555,47 +555,44 @@
             <div id="dashboardContent">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-title">今日咨询量</div>
-                        <div class="stat-value">1,234</div>
-                        <div class="stat-trend">↑ 12.5% 较昨日</div>
+                        <div class="stat-title">注册用户数</div>
+                        <div class="stat-value" id="statUsers">-</div>
+                        <div class="stat-trend">学生 + 教师</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-title">累计用户数</div>
-                        <div class="stat-value">8,567</div>
-                        <div class="stat-trend">↑ 5.2% 较上周</div>
+                        <div class="stat-title">学生用户</div>
+                        <div class="stat-value" id="statStudents">-</div>
+                        <div class="stat-trend">已注册学生</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">教师用户</div>
+                        <div class="stat-value" id="statTeachers">-</div>
+                        <div class="stat-trend">已注册教师</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">待处理反馈</div>
-                        <div class="stat-value">23</div>
+                        <div class="stat-value" id="statFeedbacks">-</div>
                         <div class="stat-trend">需要及时处理</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">知识库条目</div>
-                        <div class="stat-value">156</div>
-                        <div class="stat-trend">覆盖主要业务</div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title">热门问题 TOP 10</span>
+                        <span class="card-title">最近注册用户</span>
                     </div>
                     <div class="card-body">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>排名</th>
-                                    <th>问题</th>
-                                    <th>咨询次数</th>
-                                    <th>占比</th>
+                                    <th>账号</th>
+                                    <th>姓名</th>
+                                    <th>用户类型</th>
+                                    <th>联系电话</th>
+                                    <th>注册时间</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr><td>1</td><td>奖学金申请条件</td><td>345</td><td>28%</td></tr>
-                                <tr><td>2</td><td>宿舍管理规定</td><td>289</td><td>23%</td></tr>
-                                <tr><td>3</td><td>国家助学金申请</td><td>198</td><td>16%</td></tr>
-                                <tr><td>4</td><td>勤工助学申请</td><td>156</td><td>13%</td></tr>
-                                <tr><td>5</td><td>家庭经济困难认定</td><td>134</td><td>11%</td></tr>
+                            <tbody id="recentUsersList">
+                                <tr><td colspan="5" style="text-align: center; color: #999;">加载中...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -835,9 +832,52 @@
                 return;
             }
             
-            // 加载反馈数据
+            // 更新管理员信息
+            document.querySelector('.user-name').textContent = userData.name || '管理员';
+            
+            // 加载数据
+            loadDashboardData();
             loadFeedbackData();
         };
+        
+        // 加载数据概览
+        function loadDashboardData() {
+            const users = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
+            const feedbacks = JSON.parse(localStorage.getItem('campusQA_feedbacks') || '[]');
+            
+            const userArray = Object.values(users);
+            const studentCount = userArray.filter(u => u.type === 'student').length;
+            const teacherCount = userArray.filter(u => u.type === 'teacher').length;
+            const totalCount = userArray.length;
+            
+            // 更新统计卡片
+            document.getElementById('statUsers').textContent = totalCount;
+            document.getElementById('statStudents').textContent = studentCount;
+            document.getElementById('statTeachers').textContent = teacherCount;
+            document.getElementById('statFeedbacks').textContent = feedbacks.length;
+            
+            // 显示最近注册的用户（最多5个）
+            const recentUsers = userArray
+                .sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
+                .slice(0, 5);
+            
+            const recentUsersList = document.getElementById('recentUsersList');
+            const typeMap = { 'student': '学生', 'teacher': '教师', 'admin': '管理员' };
+            
+            if (recentUsers.length === 0) {
+                recentUsersList.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">暂无注册用户</td></tr>';
+            } else {
+                recentUsersList.innerHTML = recentUsers.map(user => `
+                    <tr>
+                        <td>${user.username}</td>
+                        <td>${user.name}</td>
+                        <td>${typeMap[user.type] || user.type}</td>
+                        <td>${user.phone || '-'}</td>
+                        <td>${new Date(user.createTime).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            }
+        }
 
         // 切换标签页
         function switchTab(tab) {
@@ -871,7 +911,9 @@
             });
             
             // 加载特定数据
-            if (tab === 'users') {
+            if (tab === 'dashboard') {
+                loadDashboardData();
+            } else if (tab === 'users') {
                 loadUserData();
             }
         }
