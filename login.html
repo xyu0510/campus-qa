@@ -158,23 +158,59 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 24px;
+            padding: 8px 0;
         }
 
         .remember-check {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
-            padding: 8px 0;
+            padding: 12px 16px;
+            margin: -12px -16px;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        .remember-check input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            margin: 0;
+        .remember-check input[type="checkbox"] {
+            display: none;
+        }
+
+        .remember-check .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #d9d9d9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            background: #fff;
             flex-shrink: 0;
+        }
+
+        .remember-check .custom-checkbox::after {
+            content: '';
+            width: 10px;
+            height: 6px;
+            border: 2px solid #fff;
+            border-top: none;
+            border-right: none;
+            transform: rotate(-45deg) scale(0);
+            transition: transform 0.2s ease;
+        }
+
+        .remember-check input[type="checkbox"]:checked + .custom-checkbox {
+            background: #07C160;
+            border-color: #07C160;
+        }
+
+        .remember-check input[type="checkbox"]:checked + .custom-checkbox::after {
+            transform: rotate(-45deg) scale(1);
+        }
+
+        .remember-check:active .custom-checkbox {
+            transform: scale(0.9);
         }
 
         .remember-check label {
@@ -183,6 +219,7 @@
             cursor: pointer;
             user-select: none;
             -webkit-user-select: none;
+            touch-action: manipulation;
         }
 
         .forgot-link {
@@ -590,11 +627,12 @@
             </div>
 
             <div class="remember-row">
-                <div class="remember-check">
+                <div class="remember-check" onclick="toggleRemember()">
                     <input type="checkbox" id="remember">
+                    <span class="custom-checkbox"></span>
                     <label for="remember">记住账号</label>
                 </div>
-                <a href="#" class="forgot-link" onclick="showForgotTip()">忘记密码？</a>
+                <a href="#" class="forgot-link" onclick="showForgotTip(); return false;">忘记密码？</a>
             </div>
 
             <button type="submit" class="login-btn" id="loginBtn">
@@ -848,6 +886,12 @@
             
             // 检查密码匹配
             checkPasswordMatch();
+        }
+
+        // 切换记住账号
+        function toggleRemember() {
+            const checkbox = document.getElementById('remember');
+            checkbox.checked = !checkbox.checked;
         }
 
         // 检查记住的账号
