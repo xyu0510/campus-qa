@@ -16,10 +16,9 @@
             background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
             min-height: 100vh;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             padding: 20px;
-            padding-bottom: 40px;
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
@@ -27,13 +26,15 @@
 
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
             animation: rotate 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
         }
 
         @keyframes rotate {
@@ -47,8 +48,9 @@
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            overflow-y: auto;
-            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
         }
 
         .login-header {
@@ -552,8 +554,15 @@
 
         /* 移动端适配 */
         @media (max-width: 480px) {
+            body {
+                align-items: flex-start;
+                padding-top: 15px;
+                padding-bottom: 30px;
+            }
+            
             .login-container {
                 border-radius: 8px;
+                margin-bottom: 20px;
             }
 
             .login-header {
