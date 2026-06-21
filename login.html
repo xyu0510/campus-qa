@@ -772,154 +772,88 @@
 
         <div class="login-footer">
             <p class="footer-text">首次使用？快速注册即可体验智能问答服务</p>
-            <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                <a href="#" class="visitor-btn" onclick="showSyncPanel(); return false;" style="font-size: 12px; background: #e6f7ff; border-color: #91d5ff; color: #1890ff;">☁️ 云端同步</a>
-                <a href="#" class="visitor-btn" onclick="exportUserData(); return false;" style="font-size: 12px;">📤 导出</a>
-                <a href="#" class="visitor-btn" onclick="importUserData(); return false;" style="font-size: 12px;">📥 导入</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 云端同步面板 -->
-    <div class="sync-panel" id="syncPanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 12px; padding: 24px; max-width: 360px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
-            <h3 style="margin: 0 0 16px; font-size: 18px; color: #333; text-align: center;">☁️ 云端同步</h3>
-            <p style="font-size: 13px; color: #666; margin-bottom: 16px; line-height: 1.6;">
-                设置同步密钥后，可在不同设备间同步用户数据。请牢记您的密钥！
-            </p>
-            <div style="margin-bottom: 16px;">
-                <label style="display: block; font-size: 13px; color: #333; margin-bottom: 8px; font-weight: 500;">同步密钥</label>
-                <input type="text" id="syncKey" placeholder="请输入同步密钥（自定义）" style="width: 100%; padding: 10px 12px; border: 1.5px solid #e5e5e5; border-radius: 8px; font-size: 14px; outline: none;" onfocus="this.style.borderColor='#07C160'" onblur="this.style.borderColor='#e5e5e5'">
-            </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-                <button onclick="syncToCloud()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #07C160 0%, #06AD56 100%); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; cursor: pointer;">上传数据</button>
-                <button onclick="syncFromCloud()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; cursor: pointer;">下载数据</button>
-            </div>
-            <button onclick="hideSyncPanel()" style="width: 100%; padding: 10px; background: #f5f5f5; border: none; border-radius: 8px; color: #666; font-size: 13px; cursor: pointer;">关闭</button>
-            <p id="syncStatus" style="font-size: 12px; color: #999; text-align: center; margin-top: 12px;"></p>
         </div>
     </div>
 
     <script>
-        // 云端同步配置 - 使用 json.storage 免费服务
-        const SYNC_API = 'https://json.storage/api/v1/json';
+        // 云端同步 - 使用免费 JSON 存储服务
+        const CLOUD_KEY = 'campus-qa-users';
+        let cloudDataId = null;
         
-        // 显示同步面板
-        function showSyncPanel() {
-            const panel = document.getElementById('syncPanel');
-            panel.style.display = 'flex';
-            // 加载保存的密钥
-            const savedKey = localStorage.getItem('campusQA_syncKey');
-            if (savedKey) {
-                document.getElementById('syncKey').value = savedKey;
+        // 初始化：从云端加载数据
+        async function initCloudSync() {
+            try {
+                // 尝试从云端获取数据ID
+                const savedId = localStorage.getItem('campusQA_cloudId');
+                if (savedId) {
+                    cloudDataId = savedId;
+                    await syncFromCloudSilent();
+                }
+            } catch (e) {
+                console.log('云端同步初始化失败:', e);
             }
         }
         
-        // 隐藏同步面板
-        function hideSyncPanel() {
-            document.getElementById('syncPanel').style.display = 'none';
+        // 静默从云端同步数据
+        async function syncFromCloudSilent() {
+            if (!cloudDataId) return;
+            
+            try {
+                const response = await fetch('https://jsonblob.com/api/jsonBlob/' + cloudDataId);
+                if (response.ok) {
+                    const cloudData = await response.json();
+                    if (cloudData && cloudData.users) {
+                        const localUsers = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
+                        const mergedUsers = { ...cloudData.users, ...localUsers };
+                        localStorage.setItem('campusQA_users', JSON.stringify(mergedUsers));
+                    }
+                }
+            } catch (e) {
+                console.log('静默同步失败:', e);
+            }
         }
         
         // 上传数据到云端
         async function syncToCloud() {
-            const syncKey = document.getElementById('syncKey').value.trim();
-            const statusEl = document.getElementById('syncStatus');
-            
-            if (!syncKey) {
-                statusEl.textContent = '请输入同步密钥';
-                statusEl.style.color = '#ff4d4f';
-                return;
-            }
-            
             const users = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
-            const rememberUser = localStorage.getItem('campusQA_rememberUser');
+            if (Object.keys(users).length === 0) return;
             
-            if (Object.keys(users).length === 0) {
-                statusEl.textContent = '暂无用户数据可上传';
-                statusEl.style.color = '#ff4d4f';
-                return;
-            }
-            
-            statusEl.textContent = '正在上传...';
-            statusEl.style.color = '#1890ff';
+            const data = {
+                users: users,
+                syncTime: new Date().toISOString()
+            };
             
             try {
-                const data = {
-                    users: users,
-                    rememberUser: rememberUser ? JSON.parse(rememberUser) : null,
-                    syncTime: new Date().toISOString(),
-                    key: syncKey
-                };
-                
-                // 使用 localStorage 模拟云端存储（通过密钥区分）
-                // 实际部署时可替换为真实云存储API
-                const cloudKey = 'campusQA_cloud_' + btoa(syncKey).slice(0, 20);
-                localStorage.setItem(cloudKey, JSON.stringify(data));
-                localStorage.setItem('campusQA_syncKey', syncKey);
-                
-                statusEl.textContent = '✅ 上传成功！共 ' + Object.keys(users).length + ' 个用户';
-                statusEl.style.color = '#52c41a';
-            } catch (error) {
-                statusEl.textContent = '上传失败：' + error.message;
-                statusEl.style.color = '#ff4d4f';
+                let response;
+                if (cloudDataId) {
+                    // 更新现有数据
+                    response = await fetch('https://jsonblob.com/api/jsonBlob/' + cloudDataId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // 创建新数据
+                    response = await fetch('https://jsonblob.com/api/jsonBlob', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (response.ok) {
+                        const location = response.headers.get('Location');
+                        if (location) {
+                            cloudDataId = location.split('/').pop();
+                            localStorage.setItem('campusQA_cloudId', cloudDataId);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('上传云端失败:', e);
             }
         }
         
-        // 从云端下载数据
-        async function syncFromCloud() {
-            const syncKey = document.getElementById('syncKey').value.trim();
-            const statusEl = document.getElementById('syncStatus');
-            
-            if (!syncKey) {
-                statusEl.textContent = '请输入同步密钥';
-                statusEl.style.color = '#ff4d4f';
-                return;
-            }
-            
-            statusEl.textContent = '正在下载...';
-            statusEl.style.color = '#1890ff';
-            
-            try {
-                const cloudKey = 'campusQA_cloud_' + btoa(syncKey).slice(0, 20);
-                const cloudData = localStorage.getItem(cloudKey);
-                
-                if (!cloudData) {
-                    statusEl.textContent = '云端暂无数据，请先上传';
-                    statusEl.style.color = '#faad14';
-                    return;
-                }
-                
-                const data = JSON.parse(cloudData);
-                
-                // 合并数据
-                const localUsers = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
-                const mergedUsers = { ...localUsers, ...data.users };
-                
-                const localCount = Object.keys(localUsers).length;
-                const cloudCount = Object.keys(data.users).length;
-                const mergedCount = Object.keys(mergedUsers).length;
-                
-                if (confirm('下载确认：\n• 本地用户：' + localCount + '\n• 云端用户：' + cloudCount + '\n• 合并后：' + mergedCount + '\n\n是否确认下载并合并？')) {
-                    localStorage.setItem('campusQA_users', JSON.stringify(mergedUsers));
-                    localStorage.setItem('campusQA_syncKey', syncKey);
-                    
-                    if (data.rememberUser) {
-                        localStorage.setItem('campusQA_rememberUser', JSON.stringify(data.rememberUser));
-                    }
-                    
-                    statusEl.textContent = '✅ 下载成功！已合并 ' + cloudCount + ' 个用户';
-                    statusEl.style.color = '#52c41a';
-                    
-                    setTimeout(() => {
-                        hideSyncPanel();
-                        location.reload();
-                    }, 1500);
-                }
-            } catch (error) {
-                statusEl.textContent = '下载失败：' + error.message;
-                statusEl.style.color = '#ff4d4f';
-            }
-        }
+        // 页面加载时初始化同步
+        initCloudSync();
         // 切换登录/注册标签
         function switchTab(type) {
             const tabs = document.querySelectorAll('.tab-item');
@@ -1144,8 +1078,8 @@
             loginBtn.textContent = '登录中...';
             errorMessage.classList.remove('show');
             
-            // 验证登录
-            setTimeout(function() {
+            // 先从云端同步，再验证登录
+            syncFromCloudSilent().then(() => {
                 // 从localStorage获取注册用户
                 const users = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
                 
@@ -1154,9 +1088,6 @@
                 
                 // 检查是否是注册用户
                 const userKey = userType + '_' + username;
-                console.log('登录验证 - 用户键:', userKey);
-                console.log('登录验证 - 已注册用户:', users);
-                console.log('登录验证 - 该用户数据:', users[userKey]);
                 
                 if (users[userKey] && users[userKey].password === password) {
                     isValid = true;
@@ -1206,7 +1137,7 @@
                     loginBtn.disabled = false;
                     loginBtn.innerHTML = '<span>🚀 立即登录</span>';
                 }
-            }, 1000);
+            });
         });
 
         // 注册表单提交
@@ -1286,6 +1217,9 @@
                 
                 localStorage.setItem('campusQA_users', JSON.stringify(users));
                 
+                // 自动同步到云端
+                syncToCloud();
+                
                 // 显示成功消息
                 successMessage.innerHTML = '🎉 注册成功！即将跳转到登录页面...';
                 successMessage.classList.add('show', 'success-animation');
@@ -1306,98 +1240,7 @@
         function showForgotTip() {
             alert('请联系学校信息中心重置密码\n联系电话：0592-XXXXXXX');
         }
-        
-        // 导出用户数据
-        function exportUserData() {
-            const users = localStorage.getItem('campusQA_users');
-            const rememberUser = localStorage.getItem('campusQA_rememberUser');
-            
-            if (!users || Object.keys(JSON.parse(users)).length === 0) {
-                alert('暂无用户数据可导出');
-                return;
-            }
-            
-            const exportData = {
-                users: JSON.parse(users),
-                rememberUser: rememberUser ? JSON.parse(rememberUser) : null,
-                exportTime: new Date().toISOString(),
-                version: '1.0'
-            };
-            
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            
-            const exportName = 'campus-qa-users-' + new Date().toISOString().slice(0, 10) + '.json';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportName);
-            linkElement.style.display = 'none';
-            document.body.appendChild(linkElement);
-            linkElement.click();
-            document.body.removeChild(linkElement);
-            
-            alert('用户数据已导出！\n文件名：' + exportName);
-        }
-        
-        // 导入用户数据
-        function importUserData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        const importData = JSON.parse(event.target.result);
-                        
-                        if (!importData.users || !importData.version) {
-                            alert('无效的数据文件格式');
-                            return;
-                        }
-                        
-                        const existingUsers = JSON.parse(localStorage.getItem('campusQA_users') || '{}');
-                        const mergedUsers = { ...existingUsers, ...importData.users };
-                        
-                        const importCount = Object.keys(importData.users).length;
-                        const mergedCount = Object.keys(mergedUsers).length;
-                        
-                        if (confirm('导入确认：\n• 导入用户：' + importCount + '\n• 合并后总数：' + mergedCount + '\n\n是否确认导入？')) {
-                            localStorage.setItem('campusQA_users', JSON.stringify(mergedUsers));
-                            
-                            if (importData.rememberUser) {
-                                localStorage.setItem('campusQA_rememberUser', JSON.stringify(importData.rememberUser));
-                            }
-                            
-                            alert('导入成功！');
-                            location.reload();
-                        }
-                    } catch (error) {
-                        alert('文件解析失败');
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-        
-        // 清除缓存数据
-        function clearCache() {
-            if (confirm('确定要清除所有本地数据吗？')) {
-                localStorage.removeItem('campusQA_users');
-                localStorage.removeItem('campusQA_rememberUser');
-                localStorage.removeItem('campusQA_syncKey');
-                sessionStorage.removeItem('campusQA_user');
-                alert('缓存已清除');
-                location.reload();
-            }
-        }
+
     </script>
 </body>
 </html>
