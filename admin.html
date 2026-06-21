@@ -264,6 +264,20 @@
         .table tbody tr:hover {
             background: #fafafa;
         }
+        
+        /* 表格容器（移动端可滚动） */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        @media (max-width: 768px) {
+            .table-wrapper {
+                margin: 0 -16px;
+                padding: 0 16px;
+            }
+        }
 
         /* 状态标签 */
         .tag {
@@ -486,6 +500,12 @@
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 220px;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
             }
 
             .main {
@@ -495,12 +515,96 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .topbar {
+                padding: 0 16px;
+            }
+            
+            .topbar-left {
+                font-size: 16px;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+            
+            .table {
+                font-size: 12px;
+            }
+            
+            .table th,
+            .table td {
+                padding: 8px 6px;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .logout-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+        
+        /* 移动端菜单按钮 */
+        .menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: #333;
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+        }
+        
+        /* 移动端遮罩 */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
         }
     </style>
 </head>
 <body>
+    <!-- 移动端遮罩 -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
     <!-- 侧边栏 -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">
                 <div class="sidebar-logo-icon">🎓</div>
@@ -508,27 +612,27 @@
             </div>
         </div>
         <div class="sidebar-menu">
-            <div class="menu-item active" onclick="switchTab('dashboard')">
+            <div class="menu-item active" onclick="switchTab('dashboard'); toggleSidebar();">
                 <span class="menu-icon">📊</span>
                 <span>数据概览</span>
             </div>
-            <div class="menu-item" onclick="switchTab('questions')">
+            <div class="menu-item" onclick="switchTab('questions'); toggleSidebar();">
                 <span class="menu-icon">❓</span>
                 <span>问题管理</span>
             </div>
-            <div class="menu-item" onclick="switchTab('feedback')">
+            <div class="menu-item" onclick="switchTab('feedback'); toggleSidebar();">
                 <span class="menu-icon">💬</span>
                 <span>反馈处理</span>
             </div>
-            <div class="menu-item" onclick="switchTab('users')">
+            <div class="menu-item" onclick="switchTab('users'); toggleSidebar();">
                 <span class="menu-icon">👥</span>
                 <span>用户管理</span>
             </div>
-            <div class="menu-item" onclick="switchTab('knowledge')">
+            <div class="menu-item" onclick="switchTab('knowledge'); toggleSidebar();">
                 <span class="menu-icon">📚</span>
                 <span>知识库管理</span>
             </div>
-            <div class="menu-item" onclick="switchTab('settings')">
+            <div class="menu-item" onclick="switchTab('settings'); toggleSidebar();">
                 <span class="menu-icon">⚙️</span>
                 <span>系统设置</span>
             </div>
@@ -539,13 +643,20 @@
     <div class="main">
         <!-- 顶部栏 -->
         <div class="topbar">
-            <div class="topbar-left" id="pageTitle">数据概览</div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-left" id="pageTitle">数据概览</div>
+            </div>
             <div class="topbar-right">
                 <div class="user-info">
                     <div class="user-avatar">管</div>
                     <span class="user-name">管理员</span>
                 </div>
-                <button class="logout-btn" onclick="logout()">退出登录</button>
+                <button class="logout-btn" onclick="logout()">退出</button>
             </div>
         </div>
 
@@ -581,20 +692,22 @@
                         <span class="card-title">最近注册用户</span>
                     </div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>账号</th>
-                                    <th>姓名</th>
-                                    <th>用户类型</th>
-                                    <th>联系电话</th>
-                                    <th>注册时间</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentUsersList">
-                                <tr><td colspan="5" style="text-align: center; color: #999;">加载中...</td></tr>
-                            </tbody>
-                        </table>
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>账号</th>
+                                        <th>姓名</th>
+                                        <th>用户类型</th>
+                                        <th>联系电话</th>
+                                        <th>注册时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentUsersList">
+                                    <tr><td colspan="5" style="text-align: center; color: #999;">加载中...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -611,39 +724,41 @@
                             <input type="text" class="search-input" placeholder="搜索问题...">
                             <button class="btn btn-primary">搜索</button>
                         </div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>问题</th>
-                                    <th>分类</th>
-                                    <th>咨询次数</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>奖学金申请条件</td>
-                                    <td>奖助学金</td>
-                                    <td>345</td>
-                                    <td><span class="tag tag-success">已发布</span></td>
-                                    <td>
-                                        <button class="btn btn-default">编辑</button>
-                                        <button class="btn btn-danger">删除</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>宿舍管理规定</td>
-                                    <td>宿舍管理</td>
-                                    <td>289</td>
-                                    <td><span class="tag tag-success">已发布</span></td>
-                                    <td>
-                                        <button class="btn btn-default">编辑</button>
-                                        <button class="btn btn-danger">删除</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>问题</th>
+                                        <th>分类</th>
+                                        <th>咨询次数</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>奖学金申请条件</td>
+                                        <td>奖助学金</td>
+                                        <td>345</td>
+                                        <td><span class="tag tag-success">已发布</span></td>
+                                        <td>
+                                            <button class="btn btn-default">编辑</button>
+                                            <button class="btn btn-danger">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>宿舍管理规定</td>
+                                        <td>宿舍管理</td>
+                                        <td>289</td>
+                                        <td><span class="tag tag-success">已发布</span></td>
+                                        <td>
+                                            <button class="btn btn-default">编辑</button>
+                                            <button class="btn btn-danger">删除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -655,30 +770,32 @@
                         <span class="card-title">用户反馈</span>
                     </div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>反馈问题</th>
-                                    <th>反馈类型</th>
-                                    <th>详细说明</th>
-                                    <th>提交时间</th>
-                                    <th>状态</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="feedbackList">
-                                <tr>
-                                    <td>奖学金申请条件</td>
-                                    <td>信息有误</td>
-                                    <td>申请条件描述不够详细</td>
-                                    <td>2026-06-20 15:30</td>
-                                    <td><span class="tag tag-warning">待处理</span></td>
-                                    <td>
-                                        <button class="btn btn-primary">处理</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>反馈问题</th>
+                                        <th>反馈类型</th>
+                                        <th>详细说明</th>
+                                        <th>提交时间</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feedbackList">
+                                    <tr>
+                                        <td>奖学金申请条件</td>
+                                        <td>信息有误</td>
+                                        <td>申请条件描述不够详细</td>
+                                        <td>2026-06-20 15:30</td>
+                                        <td><span class="tag tag-warning">待处理</span></td>
+                                        <td>
+                                            <button class="btn btn-primary">处理</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -690,23 +807,25 @@
                         <span class="card-title">用户列表</span>
                     </div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>账号</th>
-                                    <th>姓名</th>
-                                    <th>用户类型</th>
-                                    <th>联系电话</th>
-                                    <th>注册时间</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody id="userList">
-                                <tr>
-                                    <td colspan="6" style="text-align: center; color: #999;">加载中...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>账号</th>
+                                        <th>姓名</th>
+                                        <th>用户类型</th>
+                                        <th>联系电话</th>
+                                        <th>注册时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userList">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: #999;">加载中...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -719,36 +838,38 @@
                         <button class="btn btn-primary" onclick="showAddKnowledgeModal()">+ 添加知识</button>
                     </div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>标题</th>
-                                    <th>分类</th>
-                                    <th>更新时间</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>厦门工学院奖学金评选办法</td>
-                                    <td>奖助学金</td>
-                                    <td>2026-06-15</td>
-                                    <td>
-                                        <button class="btn btn-default">编辑</button>
-                                        <button class="btn btn-danger">删除</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>厦门工学院学生宿舍管理规定</td>
-                                    <td>宿舍管理</td>
-                                    <td>2026-06-21</td>
-                                    <td>
-                                        <button class="btn btn-default">编辑</button>
-                                        <button class="btn btn-danger">删除</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>标题</th>
+                                        <th>分类</th>
+                                        <th>更新时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>厦门工学院奖学金评选办法</td>
+                                        <td>奖助学金</td>
+                                        <td>2026-06-15</td>
+                                        <td>
+                                            <button class="btn btn-default">编辑</button>
+                                            <button class="btn btn-danger">删除</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>厦门工学院学生宿舍管理规定</td>
+                                        <td>宿舍管理</td>
+                                        <td>2026-06-21</td>
+                                        <td>
+                                            <button class="btn btn-default">编辑</button>
+                                            <button class="btn btn-danger">删除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -916,6 +1037,14 @@
             } else if (tab === 'users') {
                 loadUserData();
             }
+        }
+        
+        // 切换侧边栏（移动端）
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
         }
 
         // 加载反馈数据
