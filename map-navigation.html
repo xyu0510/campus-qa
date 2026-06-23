@@ -544,8 +544,18 @@
                 let errorMsg = type + '路线规划失败';
                 
                 if (result === 'INVALID_USER_KEY' || (result && result.info === 'INVALID_USER_KEY')) {
-                    errorMsg = 'API密钥权限不足';
-                    console.error('API密钥权限不足，请检查配置');
+                    errorMsg = 'API密钥无效';
+                    console.error('API密钥无效');
+                } else if (result === 'USERKEY_PLAT_NOMATCH' || (result && result.info === 'USERKEY_PLAT_NOMATCH')) {
+                    errorMsg = 'API密钥平台不匹配';
+                    console.error('========================================');
+                    console.error('API密钥平台不匹配！');
+                    console.error('当前Key是Web服务类型，路线规划需要Web端(JS API)类型');
+                    console.error('========================================');
+                    console.error('解决方案：');
+                    console.error('方案1: 在高德开放平台创建Web端(JS API)类型的Key');
+                    console.error('方案2: 直接点击"高德地图打开"按钮使用APP导航（推荐）');
+                    console.error('========================================');
                 } else if (result && result.info) {
                     errorMsg = result.info;
                 }
