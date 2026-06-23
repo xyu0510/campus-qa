@@ -515,12 +515,30 @@
 
                 showStatus('✅ ' + type + '路线规划成功！', 'success');
             } else {
-                let errorMsg = type + '路线规划失败';
-                if (result && result.info) {
-                    errorMsg += '：' + result.info;
+                // API密钥权限不足，使用备用方案
+                if (result === 'INVALID_USER_KEY' || (result && result.info === 'INVALID_USER_KEY')) {
+                    showStatus('⚠️ API密钥权限不足，请点击"高德地图打开"使用导航功能', 'error');
+                    
+                    // 显示备用方案提示
+                    const routeInfo = document.getElementById('routeInfo');
+                    routeInfo.classList.add('show');
+                    document.getElementById('routeDistance').textContent = '请使用高德APP';
+                    document.getElementById('routeTime').textContent = '点击下方按钮';
+                    document.getElementById('routeType').textContent = '备用方案';
+                    
+                    console.error('API密钥权限不足，需要在高德开放平台配置：');
+                    console.error('1. 登录 https://console.amap.com/');
+                    console.error('2. 进入应用管理 → 我的应用');
+                    console.error('3. 添加Key，选择"Web服务"');
+                    console.error('4. 勾选"路径规划"服务');
+                } else {
+                    let errorMsg = type + '路线规划失败';
+                    if (result && result.info) {
+                        errorMsg += '：' + result.info;
+                    }
+                    showStatus('❌ ' + errorMsg + '，请使用高德地图打开', 'error');
+                    console.error('路线规划失败详情:', result);
                 }
-                showStatus('❌ ' + errorMsg + '，请尝试其他方式', 'error');
-                console.error('路线规划失败详情:', result);
             }
         }
 
