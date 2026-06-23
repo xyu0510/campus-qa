@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>厦门工学院 - 校园地图导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .map-wrapper {
+            position: relative;
+            height: 500px;
+            background: #f5f5f5;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            padding: 25px;
+            background: #f8f9ff;
+            border-top: 2px solid #e8ecff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(7, 193, 96, 0.5);
+        }
+
+        .info-section {
+            padding: 25px;
+        }
+
+        .info-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            font-size: 24px;
+        }
+
+        .info-text {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status-box {
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .status-box.show {
+            display: block;
+        }
+
+        .status-box.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .status-box.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .route-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .route-info.show {
+            display: block;
+        }
+
+        .route-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #07C160;
+            margin-bottom: 15px;
+        }
+
+        .route-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #c8e6c9;
+        }
+
+        .route-detail:last-child {
+            border-bottom: none;
+        }
+
+        .route-label {
+            color: #666;
+        }
+
+        .route-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .map-wrapper {
+                height: 400px;
+            }
+
+            .controls {
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .info-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📍 厦门工学院地图导航</h1>
+            <p>获取当前位置，规划最佳路线</p>
+        </div>
+
+        <div class="map-wrapper">
+            <div id="map"></div>
+        </div>
+
+        <div class="controls">
+            <div class="status-box" id="statusBox"></div>
+            
+            <div class="btn-group">
+                <button class="btn" onclick="getCurrentLocation()">
+                    <span>📍</span>
+                    <span>获取当前位置</span>
+                </button>
+                <button class="btn btn-secondary" onclick="planRoute()" id="routeBtn" disabled>
+                    <span>🧭</span>
+                    <span>规划到校路线</span>
+                </button>
+                <button class="btn" onclick="openInAmap()">
+                    <span>📱</span>
+                    <span>高德地图打开</span>
+                </button>
+            </div>
+
+            <div class="route-info" id="routeInfo">
+                <div class="route-title">🚗 路线规划结果</div>
+                <div class="route-detail">
+                    <span class="route-label">总距离</span>
+                    <span class="route-value" id="routeDistance">-</span>
+                </div>
+                <div class="route-detail">
+                    <span class="route-label">预计时间</span>
+                    <span class="route-value" id="routeTime">-</span>
+                </div>
+                <div class="route-detail">
+                    <span class="route-label">交通方式</span>
+                    <span class="route-value" id="routeType">驾车</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-title">
+                <span>🏫</span>
+                <span>学校信息</span>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-icon">📍</span>
+                    <div class="info-text">
+                        <div class="info-label">详细地址</div>
+                        <div class="info-value">福建省厦门市集美区孙坂南路1251号</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">📞</span>
+                    <div class="info-text">
+                        <div class="info-label">联系电话</div>
+                        <div class="info-value">0592-6298888</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🚌</span>
+                    <div class="info-text">
+                        <div class="info-label">南门公交站</div>
+                        <div class="info-value">917路、949路、957路</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="info-icon">🚍</span>
+                    <div class="info-text">
+                        <div class="info-label">主公交站</div>
+                        <div class="info-value">692路、900路、929路</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: 'your_security_js_code',
+        }
+    </script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=your_amap_key"></script>
+    <script type="text/javascript">
+        // 学校坐标
+        const schoolLng = 118.066797;
+        const schoolLat = 24.616296;
+        
+        let map;
+        let currentLocation = null;
+        let schoolMarker = null;
+        let currentMarker = null;
+        let driving = null;
+
+        // 初始化地图
+        function initMap() {
+            map = new AMap.Map('map', {
+                zoom: 15,
+                center: [schoolLng, schoolLat],
+                viewMode: '2D'
+            });
+
+            // 添加控件
+            AMap.plugin(['AMap.Scale', 'AMap.ToolBar', 'AMap.Geolocation', 'AMap.Driving'], function() {
+                map.addControl(new AMap.Scale());
+                map.addControl(new AMap.ToolBar({
+                    position: 'RT'
+                }));
+            });
+
+            // 添加学校标记
+            schoolMarker = new AMap.Marker({
+                position: [schoolLng, schoolLat],
+                title: '厦门工学院',
+                label: {
+                    content: '厦门工学院',
+                    direction: 'top'
+                }
+            });
+            map.add(schoolMarker);
+
+            // 添加信息窗口
+            const infoWindow = new AMap.InfoWindow({
+                content: '<div style="padding:10px;"><h4 style="margin:0 0 8px 0;">厦门工学院</h4><p style="margin:0;font-size:12px;color:#666;">孙坂南路1251号</p></div>',
+                offset: new AMap.Pixel(0, -30)
+            });
+            infoWindow.open(map, [schoolLng, schoolLat]);
+        }
+
+        // 获取当前位置
+        function getCurrentLocation() {
+            showStatus('正在获取位置信息...', 'loading');
+
+            AMap.plugin('AMap.Geolocation', function() {
+                const geolocation = new AMap.Geolocation({
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    buttonPosition: 'RB',
+                    zoomToAccuracy: true
+                });
+
+                geolocation.getCurrentPosition(function(status, result) {
+                    if (status === 'complete') {
+                        currentLocation = result.position;
+                        
+                        // 移除旧标记
+                        if (currentMarker) {
+                            map.remove(currentMarker);
+                        }
+
+                        // 添加当前位置标记
+                        currentMarker = new AMap.Marker({
+                            position: [currentLocation.lng, currentLocation.lat],
+                            title: '当前位置',
+                            label: {
+                                content: '我的位置',
+                                direction: 'top'
+                            }
+                        });
+                        map.add(currentMarker);
+
+                        // 调整视野
+                        map.setFitView([schoolMarker, currentMarker]);
+
+                        // 启用路线规划按钮
+                        document.getElementById('routeBtn').disabled = false;
+
+                        showStatus('✅ 位置获取成功！可以规划路线了', 'success');
+                    } else {
+                        showStatus('❌ 获取位置失败，请检查定位权限', 'error');
+                    }
+                });
+            });
+        }
+
+        // 规划路线
+        function planRoute() {
+            if (!currentLocation) {
+                showStatus('请先获取当前位置', 'error');
+                return;
+            }
+
+            showStatus('正在规划路线...', 'loading');
+
+            AMap.plugin('AMap.Driving', function() {
+                driving = new AMap.Driving({
+                    map: map,
+                    policy: AMap.DrivingPolicy.LEAST_TIME
+                });
+
+                driving.search(
+                    new AMap.LngLat(currentLocation.lng, currentLocation.lat),
+                    new AMap.LngLat(schoolLng, schoolLat),
+                    function(status, result) {
+                        if (status === 'complete') {
+                            const route = result.routes[0];
+                            const distance = (route.distance / 1000).toFixed(2);
+                            const time = Math.ceil(route.time / 60);
+
+                            document.getElementById('routeDistance').textContent = distance + ' 公里';
+                            document.getElementById('routeTime').textContent = time + ' 分钟';
+                            document.getElementById('routeInfo').classList.add('show');
+
+                            showStatus('✅ 路线规划成功！', 'success');
+                        } else {
+                            showStatus('❌ 路线规划失败', 'error');
+                        }
+                    }
+                );
+            });
+        }
+
+        // 在高德地图中打开
+        function openInAmap() {
+            const url = `https://uri.amap.com/navigation?to=${schoolLng},${schoolLat},厦门工学院&mode=car&policy=1&coordinate=gaode&callnative=1`;
+            window.open(url, '_blank');
+        }
+
+        // 显示状态信息
+        function showStatus(message, type) {
+            const statusBox = document.getElementById('statusBox');
+            statusBox.textContent = message;
+            statusBox.className = 'status-box show';
+            
+            if (type === 'success') {
+                statusBox.classList.add('success');
+            } else if (type === 'error') {
+                statusBox.classList.add('error');
+            }
+        }
+
+        // 初始化
+        initMap();
+    </script>
+</body>
+</html>
