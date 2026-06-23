@@ -445,46 +445,62 @@
         // 规划路线
         function planRoute(type) {
             if (!currentLocation) {
-                showStatus('请先获取当前位置', 'error');
+                showStatus('❌ 请先获取当前位置', 'error');
                 return;
             }
 
-            showStatus('正在规划路线...', 'loading');
+            console.log('开始规划路线，类型:', type);
+            console.log('起点:', currentLocation.lng, currentLocation.lat);
+            console.log('终点:', schoolLng, schoolLat);
+
+            showStatus('正在规划' + (type === 'driving' ? '驾车' : type === 'walking' ? '步行' : '公交') + '路线...', 'loading');
 
             // 清除之前的路线
             if (driving) {
-                driving.clear();
+                try {
+                    driving.clear();
+                } catch(e) {
+                    console.log('清除路线失败:', e);
+                }
             }
 
-            const start = new AMap.LngLat(currentLocation.lng, currentLocation.lat);
-            const end = new AMap.LngLat(schoolLng, schoolLat);
+            const start = [currentLocation.lng, currentLocation.lat];
+            const end = [schoolLng, schoolLat];
+
+            console.log('起点坐标:', start);
+            console.log('终点坐标:', end);
 
             if (type === 'driving') {
                 // 驾车路线规划
                 AMap.plugin('AMap.Driving', function() {
+                    console.log('驾车插件加载完成');
                     driving = new AMap.Driving({
                         map: map,
                         policy: AMap.DrivingPolicy.LEAST_TIME
                     });
 
                     driving.search(start, end, function(status, result) {
+                        console.log('驾车路线规划回调:', status, result);
                         handleRouteResult(status, result, '驾车');
                     });
                 });
             } else if (type === 'walking') {
                 // 步行路线规划
                 AMap.plugin('AMap.Walking', function() {
+                    console.log('步行插件加载完成');
                     driving = new AMap.Walking({
                         map: map
                     });
 
                     driving.search(start, end, function(status, result) {
+                        console.log('步行路线规划回调:', status, result);
                         handleRouteResult(status, result, '步行');
                     });
                 });
             } else if (type === 'transit') {
                 // 公交路线规划
                 AMap.plugin('AMap.Transfer', function() {
+                    console.log('公交插件加载完成');
                     driving = new AMap.Transfer({
                         map: map,
                         city: '厦门市',
@@ -492,6 +508,7 @@
                     });
 
                     driving.search(start, end, function(status, result) {
+                        console.log('公交路线规划回调:', status, result);
                         handleRouteResult(status, result, '公交');
                     });
                 });
@@ -500,45 +517,50 @@
 
         // 处理路线规划结果
         function handleRouteResult(status, result, type) {
-            console.log('路线规划状态:', status);
-            console.log('路线规划结果:', result);
+            console.log('=== 路线规划结果 ===');
+            console.log('状态:', status);
+            console.log('结果:', result);
+            console.log('类型:', type);
 
-            if (status === 'complete' && result.routes && result.routes.length > 0) {
-                const route = result.routes[0];
-                const distance = (route.distance / 1000).toFixed(2);
-                const time = Math.ceil(route.time / 60);
+            if (status === 'complete') {
+                if (result && result.routes && result.routes.length > 0) {
+                    const route = result.routes[0];
+                    const distance = (route.distance / 1000).toFixed(2);
+                    const time = Math.ceil(route.time / 60);
 
-                document.getElementById('routeDistance').textContent = distance + ' 公里';
-                document.getElementById('routeTime').textContent = time + ' 分钟';
-                document.getElementById('routeType').textContent = type;
-                document.getElementById('routeInfo').classList.add('show');
+                    document.getElementById('routeDistance').textContent = distance + ' 公里';
+                    document.getElementById('routeTime').textContent = time + ' 分钟';
+                    document.getElementById('routeType').textContent = type;
+                    document.getElementById('routeInfo').classList.add('show');
 
-                showStatus('✅ ' + type + '路线规划成功！', 'success');
-            } else {
-                // API密钥权限不足，使用备用方案
-                if (result === 'INVALID_USER_KEY' || (result && result.info === 'INVALID_USER_KEY')) {
-                    showStatus('⚠️ API密钥权限不足，请点击"高德地图打开"使用导航功能', 'error');
-                    
-                    // 显示备用方案提示
-                    const routeInfo = document.getElementById('routeInfo');
-                    routeInfo.classList.add('show');
-                    document.getElementById('routeDistance').textContent = '请使用高德APP';
-                    document.getElementById('routeTime').textContent = '点击下方按钮';
-                    document.getElementById('routeType').textContent = '备用方案';
-                    
-                    console.error('API密钥权限不足，需要在高德开放平台配置：');
-                    console.error('1. 登录 https://console.amap.com/');
-                    console.error('2. 进入应用管理 → 我的应用');
-                    console.error('3. 添加Key，选择"Web服务"');
-                    console.error('4. 勾选"路径规划"服务');
+                    showStatus('✅ ' + type + '路线规划成功！距离 ' + distance + ' 公里，预计 ' + time + ' 分钟', 'success');
+                    console.log('路线规划成功，距离:', distance, '公里，时间:', time, '分钟');
                 } else {
-                    let errorMsg = type + '路线规划失败';
-                    if (result && result.info) {
-                        errorMsg += '：' + result.info;
-                    }
-                    showStatus('❌ ' + errorMsg + '，请使用高德地图打开', 'error');
-                    console.error('路线规划失败详情:', result);
+                    console.error('路线数据为空:', result);
+                    showStatus('❌ 未找到路线，请尝试其他方式', 'error');
                 }
+            } else if (status === 'error') {
+                // 错误处理
+                let errorMsg = type + '路线规划失败';
+                
+                if (result === 'INVALID_USER_KEY' || (result && result.info === 'INVALID_USER_KEY')) {
+                    errorMsg = 'API密钥权限不足';
+                    console.error('API密钥权限不足，请检查配置');
+                } else if (result && result.info) {
+                    errorMsg = result.info;
+                }
+                
+                showStatus('❌ ' + errorMsg + '，请使用高德地图打开', 'error');
+                console.error('路线规划失败:', errorMsg, result);
+                
+                // 显示备用方案
+                document.getElementById('routeInfo').classList.add('show');
+                document.getElementById('routeDistance').textContent = '请使用高德APP';
+                document.getElementById('routeTime').textContent = '点击下方按钮';
+                document.getElementById('routeType').textContent = '备用方案';
+            } else {
+                console.error('未知状态:', status, result);
+                showStatus('❌ 路线规划失败，请重试', 'error');
             }
         }
 
