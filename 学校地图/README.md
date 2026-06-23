@@ -25,10 +25,22 @@ amapuri://workInAmap/createWithToken?polymericId=mcp_f7c6702c8bf54e6fb6c20ebedb3
 打开 `index.html` 文件可直接查看校园地图。
 
 **特点：**
-- ✅ 无需API密钥，直接使用高德地图URI scheme
+- ✅ 使用高德地图URI scheme，无需API密钥
 - ✅ 使用iframe嵌入地图，简单直接
 - ✅ 支持手机导航链接
 - ✅ 显示校园主要设施信息
+
+### 方式三：地图导航页面
+
+访问 `../map-navigation.html` 可使用完整导航功能。
+
+**功能：**
+- ✅ 获取当前位置
+- ✅ 规划到校路线
+- ✅ 显示距离和时间
+- ✅ 一键跳转高德APP
+
+**注意：** 导航功能已配置高德地图API密钥，可直接使用。
 
 ## 🏫 校园主要设施
 
