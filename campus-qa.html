@@ -1423,6 +1423,16 @@
 
         // 初始化收藏徽章
         updateFavoritesBadge();
+        
+        // 检查是否有快捷问题
+        const quickQuestion = sessionStorage.getItem('campusQA_quickQuestion');
+        if (quickQuestion) {
+            sessionStorage.removeItem('campusQA_quickQuestion');
+            setTimeout(() => {
+                inputBox.value = quickQuestion;
+                sendMessage();
+            }, 500);
+        }
 
         // 自动调整输入框高度
         function autoResize(textarea) {
