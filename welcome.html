@@ -387,7 +387,7 @@
             }
         }
         
-        /* 猫猫弹窗 */
+        /* 猫猫弹窗 - 优化版 */
         .cat-modal {
             display: none;
             position: fixed;
@@ -395,72 +395,109 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            backdrop-filter: blur(8px);
         }
         
         .cat-modal.show {
             display: flex;
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .cat-content {
-            background: white;
-            border-radius: 24px;
-            max-width: 500px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fffe 100%);
+            border-radius: 28px;
+            max-width: 650px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            padding: 30px;
+            padding: 40px;
             position: relative;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+            animation: contentSlideUp 0.4s ease;
+        }
+        
+        @keyframes contentSlideUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .cat-close {
             position: absolute;
             top: 20px;
             right: 20px;
-            width: 32px;
-            height: 32px;
-            background: #f5f5f5;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
             border: none;
             border-radius: 50%;
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .cat-close:hover {
+            transform: rotate(90deg) scale(1.15);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
         }
         
         .cat-header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 3px dashed #e8f5e9;
         }
         
         .cat-header h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 8px;
+            font-size: 32px;
+            color: #07C160;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
         
         .cat-header p {
-            font-size: 14px;
-            color: #999;
+            font-size: 16px;
+            color: #666;
         }
         
         .cat-list {
             display: grid;
-            gap: 16px;
+            gap: 22px;
         }
         
         .cat-item {
-            background: #f8fffe;
-            border-radius: 16px;
-            padding: 20px;
+            background: white;
+            border-radius: 22px;
+            padding: 28px;
             display: flex;
-            gap: 16px;
+            gap: 24px;
             align-items: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        
+        .cat-item:hover {
+            transform: translateX(10px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+            border-color: #07C160;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
         }
         
         .cat-avatar {
@@ -475,27 +512,83 @@
             flex-shrink: 0;
         }
         
+        /* 猫咪头像样式 - 使用独立照片 */
+        .cat-avatar-img {
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.4s ease;
+        }
+        
+        .cat-item:hover .cat-avatar-img {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+            border-color: #07C160;
+        }
+        
+        /* 猫咪独立照片 */
+        .cat-yezi { background-image: url('images/椰子.jpg'); }
+        .cat-mimi { background-image: url('images/咪咪.jpg'); }
+        .cat-toukui { background-image: url('images/頭盔哥.jpg'); }
+        .cat-huahua { background-image: url('images/花花.jpg'); }
+        .cat-mini { background-image: url('images/mini咪.jpg'); }
+        .cat-xiaoju { background-image: url('images/小橘.jpg'); }
+        .cat-jinzi { background-image: url('images/金子.jpg'); }
+        
         .cat-info {
             flex: 1;
         }
         
         .cat-name {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 22px;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+        
+        .cat-item:hover .cat-name {
+            color: #07C160;
         }
         
         .cat-desc {
             font-size: 14px;
             color: #666;
-            line-height: 1.5;
+            line-height: 1.7;
         }
         
         .cat-location {
-            font-size: 12px;
+            font-size: 13px;
             color: #07C160;
-            margin-top: 6px;
+            margin-top: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* 滚动条美化 */
+        .cat-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .cat-content::-webkit-scrollbar-track {
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+        
+        .cat-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+            border-radius: 4px;
+        }
+        
+        .cat-content::-webkit-scrollbar-thumb:hover {
+            background: #06AD56;
         }
     </style>
 </head>
@@ -519,9 +612,9 @@
             <span>知厦</span>
         </div>
         <div class="nav-links">
-            <a href="#" class="nav-link">学校信息</a>
+            <a href="https://www.xit.edu.cn/" target="_blank" class="nav-link">学校信息</a>
             <a href="#" class="nav-link">规章制度</a>
-            <a href="#" class="nav-link">新生指南</a>
+            <a href="https://www.xit.edu.cn/youxinsy/2882/list.htm" target="_blank" class="nav-link">新生指南</a>
         </div>
         <div class="user-avatar" onclick="goToLogin()">👤</div>
     </nav>
@@ -547,20 +640,20 @@
                 <h2 class="card-title">知厦空间</h2>
                 <p class="card-subtitle">你的校园办事智能助手，解答证件补办、报销、场地申请等校内业务问题</p>
             </div>
-            <button class="start-btn" onclick="goToLogin()">🚀 开始使用</button>
+            <button class="start-btn" onclick="window.location.href='campus-qa.html'">🚀 开始使用</button>
         </div>
 
         <!-- 功能模块区 -->
         <div class="features">
             <div class="feature-card" onclick="showCats()">
-                <div class="feature-icon">�</div>
+                <div class="feature-icon">🐱</div>
                 <h3 class="feature-title">猫猫空间</h3>
                 <p class="feature-desc">了解校园内猫咪的名字与样子</p>
             </div>
-            <div class="feature-card" onclick="goToQA('宿舍')">
-                <div class="feature-icon">🏠</div>
-                <h3 class="feature-title">宿舍管理</h3>
-                <p class="feature-desc">宿舍管理规定、住宿申请、安全须知等</p>
+            <div class="feature-card" onclick="window.open('https://xitmst.xit.edu.cn/#/login', '_blank')">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">厦工e+快捷入口</h3>
+                <p class="feature-desc">校园服务一站式平台，请假、报修、查询等</p>
             </div>
             <div class="feature-card" onclick="goToQA('违纪')">
                 <div class="feature-icon">📋</div>
@@ -590,43 +683,59 @@
             </div>
             <div class="cat-list">
                 <div class="cat-item">
-                    <div class="cat-avatar">🐱</div>
+                    <div class="cat-avatar-img cat-yezi"></div>
                     <div class="cat-info">
-                        <div class="cat-name">小橘</div>
-                        <div class="cat-desc">校园里最亲人的一只橘猫，喜欢在图书馆门口晒太阳，看到同学会主动蹭腿撒娇。</div>
-                        <div class="cat-location">📍 常出没地点：图书馆门口、一食堂附近</div>
+                        <div class="cat-name">椰子</div>
+                        <div class="cat-desc">黑白相间的可爱猫咪，仰头望向左上方时特别迷人，是校园里的颜值担当。</div>
+                        <div class="cat-location">📍 常出没地点：校园各处</div>
                     </div>
                 </div>
                 <div class="cat-item">
-                    <div class="cat-avatar">😺</div>
+                    <div class="cat-avatar-img cat-mimi"></div>
                     <div class="cat-info">
-                        <div class="cat-name">黑煤球</div>
-                        <div class="cat-desc">全身黑毛的小可爱，眼睛是漂亮的黄绿色，性格比较害羞但很乖巧。</div>
-                        <div class="cat-location">📍 常出没地点：教学楼B栋花坛</div>
+                        <div class="cat-name">咪咪</div>
+                        <div class="cat-desc">棕色虎斑猫，喜欢坐在户外的落叶中，享受悠闲时光。</div>
+                        <div class="cat-location">📍 常出没地点：校园户外区域</div>
                     </div>
                 </div>
                 <div class="cat-item">
-                    <div class="cat-avatar">😸</div>
+                    <div class="cat-avatar-img cat-toukui"></div>
                     <div class="cat-info">
-                        <div class="cat-name">雪球</div>
-                        <div class="cat-desc">纯白色的小公主，毛茸茸的像一团棉花糖，喜欢在草坪上打滚。</div>
-                        <div class="cat-location">📍 常出没地点：操场旁草坪、宿舍楼下</div>
+                        <div class="cat-name">頭盔哥</div>
+                        <div class="cat-desc">棕白相间的虎斑猫，正脸直视镜头时霸气十足，像戴着头盔的勇士。</div>
+                        <div class="cat-location">📍 常出没地点：校园各处</div>
                     </div>
                 </div>
                 <div class="cat-item">
-                    <div class="cat-avatar">😻</div>
+                    <div class="cat-avatar-img cat-huahua"></div>
                     <div class="cat-info">
-                        <div class="cat-name">虎斑</div>
-                        <div class="cat-desc">虎斑纹路的帅气猫咪，身手矫健，是校园里的"捕鼠小能手"。</div>
-                        <div class="cat-location">📍 常出没地点：后勤楼附近、停车场</div>
+                        <div class="cat-name">花花 / 小花</div>
+                        <div class="cat-desc">三花猫（白、棕、黑三色相间），站在户外的地面上，优雅又可爱。</div>
+                        <div class="cat-location">📍 常出没地点：校园户外区域</div>
                     </div>
                 </div>
                 <div class="cat-item">
-                    <div class="cat-avatar">🐈</div>
+                    <div class="cat-avatar-img cat-mini"></div>
                     <div class="cat-info">
-                        <div class="cat-name">三花</div>
-                        <div class="cat-desc">黑白橘三色相间的三花猫，性格温顺，经常在宿舍区巡逻。</div>
-                        <div class="cat-location">📍 常出没地点：学生宿舍3号楼、快递站</div>
+                        <div class="cat-name">mini 咪 / 小咪</div>
+                        <div class="cat-desc">棕色虎斑猫，喜欢侧卧在地上休息，慵懒又惬意。</div>
+                        <div class="cat-location">📍 常出没地点：校园各处</div>
+                    </div>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-avatar-img cat-xiaoju"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">小橘 / 橘子</div>
+                        <div class="cat-desc">橘白相间的猫咪，正脸直视镜头，眼神清澈又可爱。</div>
+                        <div class="cat-location">📍 常出没地点：校园各处</div>
+                    </div>
+                </div>
+                <div class="cat-item">
+                    <div class="cat-avatar-img cat-jinzi"></div>
+                    <div class="cat-info">
+                        <div class="cat-name">金子</div>
+                        <div class="cat-desc">虎斑猫，躺在地上时爪子蜷缩着，像个小宝宝一样可爱。</div>
+                        <div class="cat-location">📍 常出没地点：校园各处</div>
                     </div>
                 </div>
             </div>
