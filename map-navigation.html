@@ -271,9 +271,17 @@
                     <span>📍</span>
                     <span>获取当前位置</span>
                 </button>
-                <button class="btn btn-secondary" onclick="planRoute()" id="routeBtn" disabled>
-                    <span>🧭</span>
-                    <span>规划到校路线</span>
+                <button class="btn btn-secondary" onclick="planRoute('driving')" id="routeBtn" disabled>
+                    <span>🚗</span>
+                    <span>驾车路线</span>
+                </button>
+                <button class="btn btn-secondary" onclick="planRoute('walking')" id="walkBtn" disabled>
+                    <span>🚶</span>
+                    <span>步行路线</span>
+                </button>
+                <button class="btn btn-secondary" onclick="planRoute('transit')" id="transitBtn" disabled>
+                    <span>🚌</span>
+                    <span>公交路线</span>
                 </button>
                 <button class="btn" onclick="openInAmap()">
                     <span>📱</span>
@@ -423,6 +431,8 @@
 
                         // 启用路线规划按钮
                         document.getElementById('routeBtn').disabled = false;
+                        document.getElementById('walkBtn').disabled = false;
+                        document.getElementById('transitBtn').disabled = false;
 
                         showStatus('✅ 位置获取成功！可以规划路线了', 'success');
                     } else {
@@ -433,7 +443,7 @@
         }
 
         // 规划路线
-        function planRoute() {
+        function planRoute(type) {
             if (!currentLocation) {
                 showStatus('请先获取当前位置', 'error');
                 return;
@@ -441,32 +451,77 @@
 
             showStatus('正在规划路线...', 'loading');
 
-            AMap.plugin('AMap.Driving', function() {
-                driving = new AMap.Driving({
-                    map: map,
-                    policy: AMap.DrivingPolicy.LEAST_TIME
+            // 清除之前的路线
+            if (driving) {
+                driving.clear();
+            }
+
+            const start = new AMap.LngLat(currentLocation.lng, currentLocation.lat);
+            const end = new AMap.LngLat(schoolLng, schoolLat);
+
+            if (type === 'driving') {
+                // 驾车路线规划
+                AMap.plugin('AMap.Driving', function() {
+                    driving = new AMap.Driving({
+                        map: map,
+                        policy: AMap.DrivingPolicy.LEAST_TIME
+                    });
+
+                    driving.search(start, end, function(status, result) {
+                        handleRouteResult(status, result, '驾车');
+                    });
                 });
+            } else if (type === 'walking') {
+                // 步行路线规划
+                AMap.plugin('AMap.Walking', function() {
+                    driving = new AMap.Walking({
+                        map: map
+                    });
 
-                driving.search(
-                    new AMap.LngLat(currentLocation.lng, currentLocation.lat),
-                    new AMap.LngLat(schoolLng, schoolLat),
-                    function(status, result) {
-                        if (status === 'complete') {
-                            const route = result.routes[0];
-                            const distance = (route.distance / 1000).toFixed(2);
-                            const time = Math.ceil(route.time / 60);
+                    driving.search(start, end, function(status, result) {
+                        handleRouteResult(status, result, '步行');
+                    });
+                });
+            } else if (type === 'transit') {
+                // 公交路线规划
+                AMap.plugin('AMap.Transfer', function() {
+                    driving = new AMap.Transfer({
+                        map: map,
+                        city: '厦门市',
+                        policy: AMap.TransferPolicy.LEAST_TIME
+                    });
 
-                            document.getElementById('routeDistance').textContent = distance + ' 公里';
-                            document.getElementById('routeTime').textContent = time + ' 分钟';
-                            document.getElementById('routeInfo').classList.add('show');
+                    driving.search(start, end, function(status, result) {
+                        handleRouteResult(status, result, '公交');
+                    });
+                });
+            }
+        }
 
-                            showStatus('✅ 路线规划成功！', 'success');
-                        } else {
-                            showStatus('❌ 路线规划失败', 'error');
-                        }
-                    }
-                );
-            });
+        // 处理路线规划结果
+        function handleRouteResult(status, result, type) {
+            console.log('路线规划状态:', status);
+            console.log('路线规划结果:', result);
+
+            if (status === 'complete' && result.routes && result.routes.length > 0) {
+                const route = result.routes[0];
+                const distance = (route.distance / 1000).toFixed(2);
+                const time = Math.ceil(route.time / 60);
+
+                document.getElementById('routeDistance').textContent = distance + ' 公里';
+                document.getElementById('routeTime').textContent = time + ' 分钟';
+                document.getElementById('routeType').textContent = type;
+                document.getElementById('routeInfo').classList.add('show');
+
+                showStatus('✅ ' + type + '路线规划成功！', 'success');
+            } else {
+                let errorMsg = type + '路线规划失败';
+                if (result && result.info) {
+                    errorMsg += '：' + result.info;
+                }
+                showStatus('❌ ' + errorMsg + '，请尝试其他方式', 'error');
+                console.error('路线规划失败详情:', result);
+            }
         }
 
         // 在高德地图中打开
