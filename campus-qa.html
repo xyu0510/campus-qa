@@ -170,214 +170,199 @@
             border-radius: 3px;
         }
 
-        .cat-avatar {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(255, 204, 128, 0.4);
-        }
-
-        .cat-avatar:hover {
-            transform: scale(1.15) rotate(10deg);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 22px;
-            height: 22px;
-            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A5A 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: white;
-            font-weight: 700;
-            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.5);
-        }
-
         /* 主容器 */
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 110px 50px 60px;
             position: relative;
             z-index: 1;
         }
 
-        /* 主视觉区域 */
-        .hero-section {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 60px 40px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-        }
-
-        .hero-title {
-            font-size: 52px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            color: #888;
-            font-weight: 500;
-        }
-
-        /* 功能卡片区 */
-        .features-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 25px;
-            padding: 40px 30px;
-            text-align: center;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: 3px solid transparent;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
-            border-color: #667eea;
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
-        }
-
-        .feature-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .feature-desc {
-            font-size: 15px;
-            color: #888;
-            line-height: 1.7;
-        }
-
-        /* 学校地图区 */
-        .map-section {
+        /* 问答区域 */
+        .qa-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 30px;
             padding: 50px;
-            margin-bottom: 50px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(10px);
         }
 
-        .map-title {
-            font-size: 28px;
+        .qa-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .qa-title {
+            font-size: 36px;
             font-weight: 700;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 30px;
-            text-align: center;
+            margin-bottom: 15px;
         }
 
-        .map-container {
-            width: 100%;
-            height: 450px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        .qa-subtitle {
+            font-size: 16px;
+            color: #888;
+        }
+
+        /* 搜索框 */
+        .search-box {
+            max-width: 800px;
+            margin: 0 auto 40px;
             position: relative;
-            background: linear-gradient(135deg, #e8ecff 0%, #f0f4ff 100%);
         }
 
-        .map-container iframe {
+        .search-input {
             width: 100%;
-            height: 100%;
+            padding: 20px 60px 20px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
-        }
-
-        .map-info {
-            margin-top: 25px;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
         }
 
-        .map-info-item {
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 热门问题 */
+        .hot-questions {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 20px;
+        }
+
+        .question-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .question-tag {
+            padding: 12px 24px;
             background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
-            border-radius: 15px;
+            border: 2px solid transparent;
+            border-radius: 20px;
             font-size: 14px;
             color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
             font-weight: 500;
         }
 
-        .map-info-icon {
-            font-size: 20px;
+        .question-tag:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 答案展示区 */
+        .answer-area {
+            min-height: 300px;
+            background: #f8f9ff;
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px dashed #e0e0e0;
+        }
+
+        .answer-placeholder {
+            text-align: center;
+            color: #999;
+            padding: 60px 20px;
+        }
+
+        .answer-placeholder-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .answer-placeholder-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .answer-content {
+            display: none;
+        }
+
+        .answer-content.show {
+            display: block;
+        }
+
+        .answer-content h3 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .answer-content p {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .answer-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .answer-content li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .answer-content li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
         }
 
         /* 底部信息 */
@@ -404,131 +389,22 @@
                 padding: 90px 20px 40px;
             }
 
-            .hero-section {
-                padding: 40px 25px;
+            .qa-section {
+                padding: 30px 20px;
             }
 
-            .hero-title {
-                font-size: 36px;
+            .qa-title {
+                font-size: 28px;
             }
 
-            .hero-subtitle {
-                font-size: 16px;
-            }
-
-            .features-section {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .feature-card {
-                padding: 30px 25px;
-            }
-
-            .map-section {
-                padding: 35px 25px;
-            }
-
-            .map-container {
-                height: 300px;
-            }
-
-            .map-info {
-                gap: 15px;
-            }
-
-            .map-info-item {
-                padding: 10px 15px;
-                font-size: 13px;
-            }
-        }
-
-        /* 超小屏幕适配 */
-        @media (max-width: 480px) {
-            .navbar {
-                padding: 0 10px;
-                height: 55px;
-            }
-
-            .back-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            .logo-icon {
-                width: 35px;
-                height: 35px;
-                font-size: 20px;
-            }
-
-            .logo-text .cn {
+            .search-input {
+                padding: 15px 55px 15px 20px;
                 font-size: 14px;
             }
 
-            .cat-avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 20px;
-            }
-
-            .container {
-                padding: 70px 10px 25px;
-            }
-
-            .hero-section {
-                padding: 25px 15px;
-            }
-
-            .hero-title {
-                font-size: 24px;
-            }
-
-            .hero-subtitle {
-                font-size: 12px;
-            }
-
-            .features-section {
-                gap: 12px;
-            }
-
-            .feature-card {
-                padding: 20px 15px;
-            }
-
-            .feature-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 26px;
-            }
-
-            .feature-title {
-                font-size: 16px;
-            }
-
-            .feature-desc {
-                font-size: 12px;
-            }
-
-            .map-section {
-                padding: 20px 12px;
-            }
-
-            .map-title {
-                font-size: 20px;
-            }
-
-            .map-container {
-                height: 250px;
-            }
-
-            .map-info-item {
-                font-size: 11px;
-                padding: 6px 10px;
-            }
-
-            .footer {
-                padding: 20px 10px;
-                font-size: 12px;
+            .question-tag {
+                padding: 10px 18px;
+                font-size: 13px;
             }
         }
     </style>
@@ -558,79 +434,54 @@
             </div>
         </div>
         <div class="nav-menu">
-            <div class="nav-item active">首页</div>
+            <div class="nav-item active">智能问答</div>
             <div class="nav-item" onclick="window.open('https://www.xit.edu.cn/', '_blank')">学校概况</div>
-            <div class="nav-item">新闻公告</div>
-            <div class="nav-item">学生社团</div>
-            <div class="nav-item">奖学金</div>
-            <div class="nav-item">规章制度</div>
             <div class="nav-item" onclick="window.open('https://www.xit.edu.cn/zsw/zyjs/list.htm', '_blank')">常用链接</div>
-        </div>
-        <div class="cat-avatar" onclick="showCats()">
-            😺
-            <div class="notification-badge">2</div>
         </div>
     </nav>
 
     <!-- 主容器 -->
     <div class="container">
-        <!-- 主视觉区域 -->
-        <div class="hero-section">
-            <h1 class="hero-title">欢迎来到厦门工学院</h1>
-            <p class="hero-subtitle">校园办事智能助手，让校园生活更简单</p>
-        </div>
+        <!-- 问答区域 -->
+        <div class="qa-section">
+            <div class="qa-header">
+                <h1 class="qa-title">🤖 校园办事智能问答</h1>
+                <p class="qa-subtitle">输入您的问题，获取准确的办事指南和政策解答</p>
+            </div>
 
-        <!-- 功能卡片区 -->
-        <div class="features-section">
-            <div class="feature-card" onclick="showCats()">
-                <div class="feature-icon">🐱</div>
-                <h3 class="feature-title">猫猫空间</h3>
-                <p class="feature-desc">了解校园内猫咪的名字与样子，发现校园小可爱</p>
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <input type="text" class="search-input" id="questionInput" placeholder="请输入您的问题，例如：奖学金申请流程、违纪处分解除办法..." onkeypress="handleKeyPress(event)">
+                <button class="search-btn" onclick="searchQuestion()">�</button>
             </div>
-            <div class="feature-card" onclick="window.open('https://xitmst.xit.edu.cn/#/login', '_blank')">
-                <div class="feature-icon">📱</div>
-                <h3 class="feature-title">厦工e+快捷入口</h3>
-                <p class="feature-desc">校园服务一站式平台，请假、报修、查询等</p>
-            </div>
-            <div class="feature-card" onclick="showQA('违纪')">
-                <div class="feature-icon">📋</div>
-                <h3 class="feature-title">纪律处分</h3>
-                <p class="feature-desc">违纪处分解除办法、申请流程、材料准备等</p>
-            </div>
-            <div class="feature-card" onclick="showQA('勤工助学')">
-                <div class="feature-icon">💼</div>
-                <h3 class="feature-title">勤工助学</h3>
-                <p class="feature-desc">勤工助学申请、岗位类型、报酬标准等</p>
-            </div>
-        </div>
 
-        <!-- 学校地图区 -->
-        <div class="map-section">
-            <h2 class="map-title">� 学校地图</h2>
-            <div class="map-container">
-                <iframe src="https://uri.amap.com/marker?position=118.066797,24.616296&name=厦门工学院&coordinate=gaode&callnative=0" allowfullscreen="" loading="lazy"></iframe>
-                <div style="position: absolute; top: 10px; right: 10px; z-index: 1000;">
-                    <button onclick="window.location.href='map-navigation.html'" style="padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 20px; font-size: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                        🧭 导航到校
-                    </button>
+            <!-- 热门问题 -->
+            <div class="hot-questions">
+                <div class="section-title">
+                    <span>🔥</span>
+                    <span>热门问题</span>
+                </div>
+                <div class="question-tags">
+                    <div class="question-tag" onclick="quickSearch('奖学金申请条件')">奖学金申请条件</div>
+                    <div class="question-tag" onclick="quickSearch('违纪处分解除')">违纪处分解除</div>
+                    <div class="question-tag" onclick="quickSearch('勤工助学申请')">勤工助学申请</div>
+                    <div class="question-tag" onclick="quickSearch('国家助学金')">国家助学金</div>
+                    <div class="question-tag" onclick="quickSearch('宿舍管理规定')">宿舍管理规定</div>
+                    <div class="question-tag" onclick="quickSearch('证件补办流程')">证件补办流程</div>
                 </div>
             </div>
-            <div class="map-info">
-                <div class="map-info-item">
-                    <span class="map-info-icon">🏫</span>
-                    <span>福建省厦门市集美区孙坂南路1251号</span>
+
+            <!-- 答案展示区 -->
+            <div class="answer-area">
+                <div class="answer-placeholder" id="placeholder">
+                    <div class="answer-placeholder-icon">�</div>
+                    <div class="answer-placeholder-text">
+                        <p>在上方输入您的问题，或点击热门问题标签</p>
+                        <p style="margin-top: 10px; font-size: 14px; color: #aaa;">支持查询：奖学金、助学金、违纪处分、勤工助学、宿舍管理等</p>
+                    </div>
                 </div>
-                <div class="map-info-item">
-                    <span class="map-info-icon">📞</span>
-                    <span>联系电话：0592-6298888</span>
-                </div>
-                <div class="map-info-item">
-                    <span class="map-info-icon">🚌</span>
-                    <span>南门站：917路、949路、957路</span>
-                </div>
-                <div class="map-info-item">
-                    <span class="map-info-icon">🚍</span>
-                    <span>主站：692路、900路、929路</span>
+                <div class="answer-content" id="answerContent">
+                    <!-- 答案将在这里显示 -->
                 </div>
             </div>
         </div>
@@ -646,15 +497,95 @@
         function goBack() {
             window.location.href = 'index.html';
         }
-        
-        // æ¾ç¤ºç«ç«å¼¹çª
-        function showCats() {
-            window.location.href = 'index.html';
+
+        // 快速搜索
+        function quickSearch(question) {
+            document.getElementById('questionInput').value = question;
+            searchQuestion();
         }
-        
-        // 显示问答（简化版，直接弹出提示）
-        function showQA(topic) {
-            alert('功能开发中...\n\n您选择了：' + topic + '\n\n即将跳转到智能问答页面');
+
+        // 处理回车键
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchQuestion();
+            }
+        }
+
+        // 搜索问题
+        async function searchQuestion() {
+            const question = document.getElementById('questionInput').value.trim();
+            
+            if (!question) {
+                alert('请输入您的问题');
+                return;
+            }
+
+            // 显示加载状态
+            const answerContent = document.getElementById('answerContent');
+            const placeholder = document.getElementById('placeholder');
+            
+            placeholder.style.display = 'none';
+            answerContent.classList.add('show');
+            answerContent.innerHTML = '<div style="text-align: center; padding: 40px;"><p style="font-size: 18px; color: #667eea;">🔍 正在查询中...</p></div>';
+
+            try {
+                // 调用知识库搜索
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        knowledgeBase: '厦工政策'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.answer) {
+                    displayAnswer(data.answer);
+                } else {
+                    displayNoAnswer();
+                }
+            } catch (error) {
+                console.error('查询失败:', error);
+                displayError();
+            }
+        }
+
+        // 显示答案
+        function displayAnswer(answer) {
+            const answerContent = document.getElementById('answerContent');
+            answerContent.innerHTML = `
+                <h3>📋 答案</h3>
+                <div style="font-size: 15px; color: #555; line-height: 1.8;">
+                    ${answer}
+                </div>
+            `;
+        }
+
+        // 显示无答案
+        function displayNoAnswer() {
+            const answerContent = document.getElementById('answerContent');
+            answerContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <p style="font-size: 40px; margin-bottom: 20px;">😕</p>
+                    <p style="font-size: 16px; color: #999;">抱歉，未找到相关答案</p>
+                    <p style="font-size: 14px; color: #aaa; margin-top: 10px;">请尝试换一种提问方式，或联系学校相关部门咨询</p>
+                </div>
+            `;
+        }
+
+        // 显示错误
+        function displayError() {
+            const answerContent = document.getElementById('answerContent');
+            answerContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <p style="font-size: 40px; margin-bottom: 20px;">⚠️</p>
+                    <p style="font-size: 16px; color: #999;">查询出错，请稍后重试</p>
+                </div>
+            `;
         }
     </script>
 </body>
