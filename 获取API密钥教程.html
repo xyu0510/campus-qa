@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>获取通义千问API密钥教程</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-content {
+            margin-left: 55px;
+            font-size: 15px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .step-content a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .step-content a:hover {
+            text-decoration: underline;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .important {
+            background: #ffe6e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .info-box {
+            background: #e8f5e9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .info-box h3 {
+            color: #07C160;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .step {
+                padding: 20px;
+            }
+
+            .step-title {
+                font-size: 18px;
+            }
+
+            .step-content {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔑 获取通义千问API密钥教程</h1>
+            <p>按以下步骤操作，5分钟完成</p>
+        </div>
+
+        <div class="content">
+            <!-- 步骤1 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">1</span>
+                    访问阿里云灵积平台
+                </div>
+                <div class="step-content">
+                    <p>点击下方链接，打开阿里云灵积模型服务平台：</p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <a href="https://dashscope.console.aliyun.com/" target="_blank" class="btn">
+                            🔗 打开阿里云灵积平台
+                        </a>
+                    </div>
+                    <p><strong>提示：</strong>如果未登录，会自动跳转到登录页面。</p>
+                </div>
+            </div>
+
+            <!-- 步骤2 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">2</span>
+                    登录阿里云账号
+                </div>
+                <div class="step-content">
+                    <p><strong>方式一：已有阿里云账号</strong></p>
+                    <p style="margin-left: 20px;">直接登录即可</p>
+                    
+                    <p style="margin-top: 15px;"><strong>方式二：没有阿里云账号</strong></p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>点击"免费注册"</li>
+                        <li>使用手机号注册</li>
+                        <li>完成实名认证（需要身份证）</li>
+                        <li>注册成功后登录</li>
+                    </ol>
+                    
+                    <div class="important" style="margin-top: 15px;">
+                        <strong>⚠️ 注意：</strong>实名认证是必须的，但过程很快，只需1-2分钟。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤3 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">3</span>
+                    开通灵积模型服务
+                </div>
+                <div class="step-content">
+                    <p>登录后，如果是首次使用，会看到开通页面：</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>勾选"我已阅读并同意《服务协议》"</li>
+                        <li>点击"立即开通"按钮</li>
+                        <li>等待开通成功（通常几秒钟）</li>
+                    </ol>
+                    
+                    <div class="highlight success" style="margin-top: 15px;">
+                        <strong>✅ 开通成功后：</strong>你将获得<strong>100万tokens免费额度</strong>，足够使用很长时间！
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤4 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">4</span>
+                    创建API密钥
+                </div>
+                <div class="step-content">
+                    <p>开通服务后，按以下步骤创建API密钥：</p>
+                    
+                    <p style="margin-top: 15px;"><strong>方法一：在控制台首页</strong></p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>在页面左侧找到"API-KEY管理"</li>
+                        <li>点击进入</li>
+                        <li>点击"创建 API Key"</li>
+                        <li>输入名称（如：校园问答系统）</li>
+                        <li>点击确定</li>
+                    </ol>
+                    
+                    <p style="margin-top: 15px;"><strong>方法二：直接访问</strong></p>
+                    <div class="code-block">
+                        <a href="https://dashscope.console.aliyun.com/apiKey" target="_blank">
+                            https://dashscope.console.aliyun.com/apiKey
+                        </a>
+                    </div>
+                    
+                    <div class="important" style="margin-top: 15px;">
+                        <strong>⚠️ 重要：</strong>创建后立即复制API Key，离开页面后无法再次查看！
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤5 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">5</span>
+                    复制并保存API密钥
+                </div>
+                <div class="step-content">
+                    <p>创建成功后，你会看到类似这样的API Key：</p>
+                    <div class="code-block">
+                        sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                    </div>
+                    
+                    <p style="margin-top: 15px;"><strong>请立即：</strong></p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>点击复制按钮</li>
+                        <li>粘贴到记事本保存</li>
+                        <li>或直接告诉我，我帮你集成到系统</li>
+                    </ol>
+                    
+                    <div class="highlight" style="margin-top: 15px;">
+                        <strong>💡 提示：</strong>API Key格式为 <code>sk-</code> 开头的长字符串，共约40个字符。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 步骤6 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">6</span>
+                    告诉我API密钥
+                </div>
+                <div class="step-content">
+                    <p>获取到API密钥后，请直接发给我：</p>
+                    <div class="code-block">
+                        格式：sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                    </div>
+                    
+                    <p style="margin-top: 15px;">我会帮你：</p>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li>✅ 集成到问答系统</li>
+                        <li>✅ 配置知识库上下文</li>
+                        <li>✅ 优化回答效果</li>
+                        <li>✅ 测试问答功能</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 免费额度说明 -->
+            <div class="info-box">
+                <h3>🎁 免费额度说明</h3>
+                <p><strong>通义千问免费额度：</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>总量：</strong>100万 tokens/月</li>
+                    <li><strong>预计问答量：</strong>2500-5000次/月</li>
+                    <li><strong>有效期：</strong>永久免费（每月刷新）</li>
+                </ul>
+                
+                <p style="margin-top: 15px;"><strong>成本估算：</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>每次问答约消耗 400 tokens</li>
+                    <li>100万tokens ≈ 2500次完整问答</li>
+                    <li>对于校园问答系统完全够用</li>
+                </ul>
+            </div>
+
+            <!-- 常见问题 -->
+            <div class="step">
+                <div class="step-title">
+                    <span class="step-number">?</span>
+                    常见问题
+                </div>
+                <div class="step-content">
+                    <p><strong>Q1: 实名认证安全吗？</strong></p>
+                    <p style="margin-left: 20px; color: #666;">A: 完全安全，阿里云是正规企业，实名认证是法律法规要求。</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Q2: 免费额度用完了怎么办？</strong></p>
+                    <p style="margin-left: 20px; color: #666;">A: 可以充值继续使用，或者等待下月刷新免费额度。</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Q3: API密钥泄露了怎么办？</strong></p>
+                    <p style="margin-left: 20px; color: #666;">A: 立即在控制台删除旧密钥，创建新密钥。</p>
+                    
+                    <p style="margin-top: 15px;"><strong>Q4: 需要付费吗？</strong></p>
+                    <p style="margin-left: 20px; color: #666;">A: 不需要！免费额度完全够用，无需绑定银行卡。</p>
+                </div>
+            </div>
+
+            <!-- 快速链接 -->
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://dashscope.console.aliyun.com/" target="_blank" class="btn">
+                    🔑 打开阿里云灵积平台
+                </a>
+                <a href="https://dashscope.console.aliyun.com/apiKey" target="_blank" class="btn">
+                    🗝️ 直接创建API密钥
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
