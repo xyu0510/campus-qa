@@ -32,6 +32,32 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) translateX(-3px);
         }
 
         .header h1 {
@@ -255,6 +281,10 @@
 <body>
     <div class="container">
         <div class="header">
+            <a href="index.html" class="back-btn">
+                <span>←</span>
+                <span>返回首页</span>
+            </a>
             <h1>📍 厦门工学院地图导航</h1>
             <p>获取当前位置，规划最佳路线</p>
         </div>
