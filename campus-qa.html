@@ -452,7 +452,7 @@
             <!-- 搜索框 -->
             <div class="search-box">
                 <input type="text" class="search-input" id="questionInput" placeholder="请输入您的问题，例如：奖学金申请流程、违纪处分解除办法..." onkeypress="handleKeyPress(event)">
-                <button class="search-btn" onclick="searchQuestion()">�</button>
+                <button class="search-btn" onclick="searchQuestion()">🔍</button>
             </div>
 
             <!-- 热门问题 -->
@@ -474,7 +474,7 @@
             <!-- 答案展示区 -->
             <div class="answer-area">
                 <div class="answer-placeholder" id="placeholder">
-                    <div class="answer-placeholder-icon">�</div>
+                    <div class="answer-placeholder-icon">💬</div>
                     <div class="answer-placeholder-text">
                         <p>在上方输入您的问题，或点击热门问题标签</p>
                         <p style="margin-top: 10px; font-size: 14px; color: #aaa;">支持查询：奖学金、助学金、违纪处分、勤工助学、宿舍管理等</p>
@@ -493,6 +493,120 @@
     </div>
 
     <script>
+        // 知识库数据
+        const knowledgeBase = {
+            '奖学金': `
+                <h3>🎓 奖学金申请指南</h3>
+                <p><strong>申请条件：</strong></p>
+                <ul>
+                    <li>全日制在校本科学生</li>
+                    <li>学习成绩优异，无挂科记录</li>
+                    <li>综合素质测评成绩排名靠前</li>
+                    <li>无违纪处分记录</li>
+                </ul>
+                <p><strong>申请材料：</strong></p>
+                <ul>
+                    <li>奖学金申请表</li>
+                    <li>成绩单</li>
+                    <li>综合素质测评表</li>
+                    <li>其他证明材料</li>
+                </ul>
+                <p><strong>申请流程：</strong></p>
+                <p>1. 提交申请材料至所在学院<br>2. 学院初审并公示<br>3. 学校复审<br>4. 公示最终名单</p>
+            `,
+            '违纪': `
+                <h3>📋 违纪处分解除办法</h3>
+                <p><strong>申请条件：</strong></p>
+                <ul>
+                    <li>处分期满（警告6个月、严重警告9个月、记过12个月、留校察看18个月）</li>
+                    <li>处分期间表现良好，无新的违纪行为</li>
+                    <li>完成整改要求</li>
+                </ul>
+                <p><strong>申请材料：</strong></p>
+                <ul>
+                    <li>解除处分申请书</li>
+                    <li>思想汇报</li>
+                    <li>班主任/辅导员意见</li>
+                    <li>相关证明材料</li>
+                </ul>
+                <p><strong>申请流程：</strong></p>
+                <p>1. 向所在学院提交申请<br>2. 学院审核并公示<br>3. 学生处审批<br>4. 发文解除处分</p>
+            `,
+            '勤工助学': `
+                <h3>💼 勤工助学申请指南</h3>
+                <p><strong>申请条件：</strong></p>
+                <ul>
+                    <li>全日制在校家庭经济困难学生</li>
+                    <li>学有余力，不影响正常学习</li>
+                    <li>遵守学校规章制度</li>
+                </ul>
+                <p><strong>岗位类型：</strong></p>
+                <ul>
+                    <li>校内固定岗位</li>
+                    <li>校内临时岗位</li>
+                    <li>校外岗位</li>
+                </ul>
+                <p><strong>报酬标准：</strong></p>
+                <p>校内岗位：按小时计算，不低于厦门市最低工资标准<br>校外岗位：按协议约定执行</p>
+            `,
+            '助学金': `
+                <h3>💰 国家助学金申请指南</h3>
+                <p><strong>资助标准：</strong></p>
+                <ul>
+                    <li>特别困难：4000元/年</li>
+                    <li>比较困难：3000元/年</li>
+                    <li>一般困难：2000元/年</li>
+                </ul>
+                <p><strong>申请条件：</strong></p>
+                <ul>
+                    <li>家庭经济困难学生</li>
+                    <li>已通过家庭经济困难认定</li>
+                    <li>勤奋学习，生活俭朴</li>
+                </ul>
+                <p><strong>申请流程：</strong></p>
+                <p>1. 提交家庭经济困难认定申请<br>2. 填写国家助学金申请表<br>3. 学院审核公示<br>4. 学校审批发放</p>
+            `,
+            '宿舍': `
+                <h3>🏠 宿舍管理规定</h3>
+                <p><strong>作息时间：</strong></p>
+                <ul>
+                    <li>开门时间：6:00</li>
+                    <li>关门时间：23:00</li>
+                    <li>熄灯时间：23:30</li>
+                </ul>
+                <p><strong>管理规定：</strong></p>
+                <ul>
+                    <li>禁止使用大功率电器</li>
+                    <li>禁止留宿外人</li>
+                    <li>保持宿舍卫生整洁</li>
+                    <li>按时归寝</li>
+                </ul>
+                <p><strong>违规处理：</strong></p>
+                <p>违反规定将给予批评教育、通报批评或纪律处分</p>
+            `,
+            '证件': `
+                <h3>📄 证件补办流程</h3>
+                <p><strong>学生证补办：</strong></p>
+                <ul>
+                    <li>提交申请表</li>
+                    <li>一寸照片2张</li>
+                    <li>工本费10元</li>
+                    <li>到学生处办理</li>
+                </ul>
+                <p><strong>身份证补办：</strong></p>
+                <ul>
+                    <li>到户籍所在地派出所办理</li>
+                    <li>或在学校集体户口所在地派出所办理</li>
+                </ul>
+                <p><strong>校园卡补办：</strong></p>
+                <ul>
+                    <li>到校园卡中心办理</li>
+                    <li>携带身份证</li>
+                    <li>工本费20元</li>
+                </ul>
+            `
+        };
+
         // 返回上一页
         function goBack() {
             window.location.href = 'index.html';
@@ -512,7 +626,7 @@
         }
 
         // 搜索问题
-        async function searchQuestion() {
+        function searchQuestion() {
             const question = document.getElementById('questionInput').value.trim();
             
             if (!question) {
@@ -526,66 +640,31 @@
             
             placeholder.style.display = 'none';
             answerContent.classList.add('show');
-            answerContent.innerHTML = '<div style="text-align: center; padding: 40px;"><p style="font-size: 18px; color: #667eea;">🔍 正在查询中...</p></div>';
+            answerContent.innerHTML = '<div style="text-align: center; padding: 40px;"><p style="font-size: 18px; color: #667eea;">� 正在查询知识库...</p></div>';
 
-            try {
-                // 调用知识库搜索
-                const response = await fetch('/api/search', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        question: question,
-                        knowledgeBase: '厦工政策'
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (data.answer) {
-                    displayAnswer(data.answer);
-                } else {
-                    displayNoAnswer();
+            // 模拟延迟
+            setTimeout(function() {
+                // 查找匹配的答案
+                let foundAnswer = null;
+                for (const key in knowledgeBase) {
+                    if (question.includes(key)) {
+                        foundAnswer = knowledgeBase[key];
+                        break;
+                    }
                 }
-            } catch (error) {
-                console.error('查询失败:', error);
-                displayError();
-            }
-        }
 
-        // 显示答案
-        function displayAnswer(answer) {
-            const answerContent = document.getElementById('answerContent');
-            answerContent.innerHTML = `
-                <h3>📋 答案</h3>
-                <div style="font-size: 15px; color: #555; line-height: 1.8;">
-                    ${answer}
-                </div>
-            `;
-        }
-
-        // 显示无答案
-        function displayNoAnswer() {
-            const answerContent = document.getElementById('answerContent');
-            answerContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <p style="font-size: 40px; margin-bottom: 20px;">😕</p>
-                    <p style="font-size: 16px; color: #999;">抱歉，未找到相关答案</p>
-                    <p style="font-size: 14px; color: #aaa; margin-top: 10px;">请尝试换一种提问方式，或联系学校相关部门咨询</p>
-                </div>
-            `;
-        }
-
-        // 显示错误
-        function displayError() {
-            const answerContent = document.getElementById('answerContent');
-            answerContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <p style="font-size: 40px; margin-bottom: 20px;">⚠️</p>
-                    <p style="font-size: 16px; color: #999;">查询出错，请稍后重试</p>
-                </div>
-            `;
+                if (foundAnswer) {
+                    answerContent.innerHTML = foundAnswer;
+                } else {
+                    answerContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <p style="font-size: 40px; margin-bottom: 20px;">😕</p>
+                            <p style="font-size: 16px; color: #999;">抱歉，未找到相关答案</p>
+                            <p style="font-size: 14px; color: #aaa; margin-top: 10px;">请尝试换一种提问方式，或联系学校相关部门咨询</p>
+                        </div>
+                    `;
+                }
+            }, 300);
         }
     </script>
 </body>
