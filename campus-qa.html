@@ -672,38 +672,6 @@
             }
         }
 
-            // 显示加载状态
-            const answerContent = document.getElementById('answerContent');
-            const placeholder = document.getElementById('placeholder');
-            
-            placeholder.style.display = 'none';
-            answerContent.classList.add('show');
-            answerContent.innerHTML = '<div style="text-align: center; padding: 40px;"><p style="font-size: 18px; color: #667eea;">� 正在查询知识库...</p></div>';
-
-            // 模拟延迟
-            setTimeout(function() {
-                // 查找匹配的答案
-                let foundAnswer = null;
-                for (const key in knowledgeBase) {
-                    if (question.includes(key)) {
-                        foundAnswer = knowledgeBase[key];
-                        break;
-                    }
-                }
-
-                if (foundAnswer) {
-                    answerContent.innerHTML = foundAnswer;
-                } else {
-                    answerContent.innerHTML = `
-                        <div style="text-align: center; padding: 40px;">
-                            <p style="font-size: 40px; margin-bottom: 20px;">😕</p>
-                            <p style="font-size: 16px; color: #999;">抱歉，未找到相关答案</p>
-                            <p style="font-size: 14px; color: #aaa; margin-top: 10px;">请尝试换一种提问方式，或联系学校相关部门咨询</p>
-                        </div>
-                    `;
-                }
-            }, 300);
-        }
     </script>
 </body>
 </html>
