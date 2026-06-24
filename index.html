@@ -294,28 +294,40 @@
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg, #f0fff4 0%, #e6f7ff 100%);
-            border-radius: 16px;
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+            font-size: 35px;
+            box-shadow: 0 8px 20px rgba(7, 193, 96, 0.25);
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 30px rgba(7, 193, 96, 0.4);
         }
 
         .feature-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 20px;
+            font-weight: 700;
             color: #333;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title {
+            color: #07C160;
         }
 
         .feature-desc {
             font-size: 14px;
-            color: #999;
-            line-height: 1.5;
+            color: #888;
+            line-height: 1.6;
         }
 
         /* 底部信息 */
@@ -655,15 +667,10 @@
                 <h3 class="feature-title">厦工e+快捷入口</h3>
                 <p class="feature-desc">校园服务一站式平台，请假、报修、查询等</p>
             </div>
-            <div class="feature-card" onclick="goToQA('违纪')">
-                <div class="feature-icon">📋</div>
-                <h3 class="feature-title">纪律处分</h3>
-                <p class="feature-desc">违纪处分解除办法、申请流程、材料准备等</p>
-            </div>
-            <div class="feature-card" onclick="goToQA('勤工助学')">
-                <div class="feature-icon">💼</div>
-                <h3 class="feature-title">勤工助学</h3>
-                <p class="feature-desc">勤工助学申请、岗位类型、报酬标准等</p>
+            <div class="feature-card" onclick="window.location.href='map-navigation.html'">
+                <div class="feature-icon">�️</div>
+                <h3 class="feature-title">学校导航</h3>
+                <p class="feature-desc">获取当前位置，规划到校最佳路线</p>
             </div>
         </div>
 
