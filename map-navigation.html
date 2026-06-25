@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(180deg, #f8fffe 0%, #f0fff4 50%, #e8f5e9 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -28,7 +28,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -83,8 +83,8 @@
 
         .controls {
             padding: 25px;
-            background: #f8f9ff;
-            border-top: 2px solid #e8ecff;
+            background: #f8fffe;
+            border-top: 2px solid #e8f5e9;
         }
 
         .btn-group {
@@ -100,7 +100,7 @@
             align-items: center;
             gap: 8px;
             padding: 14px 28px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
             color: white;
             border: none;
             border-radius: 30px;
@@ -108,12 +108,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
         }
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 8px 25px rgba(7, 193, 96, 0.5);
         }
 
         .btn:disabled {
@@ -127,12 +127,12 @@
         }
 
         .btn-secondary {
-            background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
-            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            box-shadow: 0 4px 15px rgba(24, 144, 255, 0.3);
         }
 
         .btn-secondary:hover {
-            box-shadow: 0 8px 25px rgba(7, 193, 96, 0.5);
+            box-shadow: 0 8px 25px rgba(24, 144, 255, 0.5);
         }
 
         .info-section {
@@ -157,7 +157,7 @@
 
         .info-item {
             padding: 15px;
-            background: #f8f9ff;
+            background: #f8fffe;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -186,8 +186,8 @@
 
         .status-box {
             padding: 15px;
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
+            background: #e8f5e9;
+            border-left: 4px solid #07C160;
             border-radius: 8px;
             margin-bottom: 20px;
             display: none;
@@ -199,12 +199,12 @@
 
         .status-box.success {
             background: #d4edda;
-            border-left-color: #28a745;
+            border-left-color: #07C160;
         }
 
         .status-box.error {
-            background: #f8d7da;
-            border-left-color: #dc3545;
+            background: #fff3cd;
+            border-left-color: #faad14;
         }
 
         .route-info {
@@ -253,10 +253,19 @@
 
             .header {
                 padding: 20px;
+                padding-top: 60px;
             }
 
             .header h1 {
                 font-size: 22px;
+            }
+
+            .back-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+                left: 15px;
+                top: 20px;
+                transform: none;
             }
 
             .map-wrapper {
